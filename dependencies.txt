@@ -1,0 +1,308 @@
+-------------------------------------------
+Dependencies of MIRAGE:
+-------------------------------------------
+
+Apache2 + PHP4 + PEAR::XML_SERIALIZER + PERL
+
+
+-------------------------------------------
+Developed over the following system:
+-------------------------------------------
+
+Debian 3.1 (Sarge) installed from:
+
+http://iso.linuxquestions.org/download/http/mirrors.usc.edu/debian-31r0a-i386-netinst.iso (MD5SUM:aa3279af427fd0c6dcbdcf08d0115d90)
+
+-------------------------------------------
+Main packages for development purposes:
+-------------------------------------------
+
++++-==============================-==============================-============================================================================
+||/ Name                           Version                        Description
++++-==============================-==============================-============================================================================
+ii  apache2                        2.0.54-5                       next generation, scalable, extendable web server
+ii  apache2-common                 2.0.54-5                       next generation, scalable, extendable web server
+ii  apache2-mpm-prefork            2.0.54-5                       traditional model for Apache2
+ii  apache2-utils                  2.0.54-5                       utility programs for webservers
+ii  libapache2-mod-php4            4.3.10-16                      server-side, HTML-embedded scripting language (apache 2.0 module)
+ii  php4-common                    4.3.10-16                      Common files for packages built from the php4 source
+ii  php4-pear                      4.3.10-16                      PEAR - PHP Extension and Application Repository
+ii  libperl5.8                     5.8.4-8                        Shared Perl library
+ii  perl                           5.8.4-8                        Larry Wall's Practical Extraction and Report Language
+ii  perl-base                      5.8.4-8                        The Pathologically Eclectic Rubbish Lister
+ii  perl-modules                   5.8.4-8                        Core Perl modules
++++-==============================-==============================-============================================================================
+
+-------------------------------------------
+PEAR::XML_SERIALIZER
+-------------------------------------------
+
+$> pear install XML_Parser
+$> pear install XML_Util
+$> pear install XML_Serializer-0.18.0
+$> pear list
+
+=========================================
+Installed packages, channel pear.php.net:
+=========================================
+Package         Version State
+XML_Parser     1.2.7   stable 
+XML_Util       1.1.1   stable 
+XML_Serializer 0.18.0  beta   
+
+
+-------------------------------------------
+Complete set of packages
+-------------------------------------------
+
++++-==============================-==============================-============================================================================
+||/ Name                           Version                        Description
++++-==============================-==============================-============================================================================
+ii  adduser                        3.63                           Add and remove users and groups
+ii  analog                         5.32-14                        analyzes logfiles from web servers
+ii  apache2                        2.0.54-5                       next generation, scalable, extendable web server
+ii  apache2-common                 2.0.54-5                       next generation, scalable, extendable web server
+ii  apache2-mpm-prefork            2.0.54-5                       traditional model for Apache2
+ii  apache2-utils                  2.0.54-5                       utility programs for webservers
+ii  apache2-doc                    2.0.54-5                       documentation for apache2
+ii  apt                            0.5.28.6                       Advanced front-end for dpkg
+ii  apt-utils                      0.5.28.6                       APT utility programs
+ii  aptitude                       0.2.15.9-2                     terminal-based apt frontend
+ii  at                             3.1.8-11                       Delayed job execution and batch processing
+ii  base-config                    2.53.10                        Debian base system configurator
+ii  base-files                     3.1.2                          Debian base system miscellaneous files
+ii  base-passwd                    3.5.9                          Debian base system master password and group files
+ii  bash                           2.05b-26                       The GNU Bourne Again SHell
+ii  bc                             1.06-15                        The GNU bc arbitrary precision calculator language
+ii  bin86                          0.16.14-1.2                    16-bit x86 assembler and loader
+ii  bind9-host                     9.2.4-1                        Version of 'host' bundled with BIND 9.X
+ii  binutils                       2.15-6                         The GNU assembler, linker and binary utilities
+ii  bison                          1.875d-1                       A parser generator that is compatible with YACC
+ii  bsdmainutils                   6.0.17                         collection of more utilities from FreeBSD
+ii  bsdutils                       2.12p-4sarge1                  Basic utilities from 4.4BSD-Lite
+ii  console-common                 0.7.49                         Basic infrastructure for text console configuration
+ii  console-data                   2002.12.04dbs-49               Keymaps, fonts, charset maps, fallback tables for console-tools
+ii  console-tools                  0.2.3dbs-56                    Linux console and font utilities
+ii  coreutils                      5.2.1-2                        The GNU core utilities
+ii  cpio                           2.5-1.3                        GNU cpio -- a program to manage archives of files.
+ii  cpp                            3.3.5-3                        The GNU C preprocessor (cpp)
+ii  cpp-3.3                        3.3.5-13                       The GNU C preprocessor
+ii  cramfsprogs                    1.1-6                          Tools for CramFs (Compressed ROM File System)
+ii  cron                           3.0pl1-86                      management of regular background processing
+ii  dash                           0.5.2-5                        The Debian Almquist Shell
+ii  dc                             1.06-15                        The GNU dc arbitrary precision reverse-polish calculator
+ii  debconf                        1.4.30.13                      Debian configuration management system
+ii  debconf-i18n                   1.4.30.13                      full internationalization support for debconf
+ii  debianutils                    2.8.4                          Miscellaneous utilities specific to Debian
+ii  dhcp-client                    2.0pl5-19.1                    DHCP Client
+ii  dictionaries-common            0.25.12                        Common utilities for spelling dictionary tools
+ii  diff                           2.8.1-11                       File comparison utilities
+ii  discover1                      1.7.7                          hardware identification system
+ii  discover1-data                 1.2005.01.08                   hardware lists for libdiscover1
+ii  dnsutils                       9.2.4-1                        Clients provided with BIND
+ii  doc-debian                     3.1                            Debian Project documentation, Debian FAQ and other documents
+ii  doc-linux-text                 2005.04-1                      Linux HOWTOs and FAQs in ASCII format
+ii  dpkg                           1.10.28                        Package maintenance system for Debian
+ii  dpkg-dev                       1.10.28                        Package building tools for Debian
+ii  dselect                        1.10.28                        a user tool to manage Debian packages
+ii  e2fslibs                       1.37-2sarge1                   ext2 filesystem libraries
+ii  e2fsprogs                      1.37-2sarge1                   ext2 file system utilities and libraries
+ii  ed                             0.2-20                         The classic unix line editor
+ii  eject                          2.0.13deb-8sarge2              ejects CDs and operates CD-Changers under Linux
+ii  exim4                          4.50-8                         metapackage to ease exim MTA (v4) installation
+ii  exim4-base                     4.50-8                         support files for all exim MTA (v4) packages
+ii  exim4-config                   4.50-8                         configuration for the exim MTA (v4)
+ii  exim4-daemon-light             4.50-8                         lightweight exim MTA (v4) daemon
+ii  fdutils                        5.4-20040228-1                 Linux floppy utilities
+ii  file                           4.12-1                         Determines file type using "magic" numbers
+ii  findutils                      4.1.20-6                       utilities for finding files--find, xargs, and locate
+ii  finger                         0.17-7                         user information lookup program
+ii  flex                           2.5.31-31                      A fast lexical analyzer generator.
+ii  ftp                            0.17-12                        The FTP client.
+ii  g++                            3.3.5-3                        The GNU C++ compiler
+ii  g++-3.3                        3.3.5-13                       The GNU C++ compiler
+ii  gcc                            3.3.5-3                        The GNU C compiler
+ii  gcc-3.3                        3.3.5-13                       The GNU C compiler
+ii  gcc-3.3-base                   3.3.5-13                       The GNU Compiler Collection (base package)
+ii  gdb                            6.3-6                          The GNU Debugger
+ii  gettext-base                   0.14.4-2                       GNU Internationalization utilities for the base system
+ii  gnu-efi                        3.0a-4                         Library for developing EFI applications
+ii  gnupg                          1.4.1-1                        GNU privacy guard - a free PGP replacement
+ii  grep                           2.5.1.ds1-4                    GNU grep, egrep and fgrep
+ii  groff-base                     1.18.1.1-7                     GNU troff text-formatting system (base system components)
+ii  grub                           0.95+cvs20040624-17            GRand Unified Bootloader
+ii  gzip                           1.3.5-10sarge1                 The GNU compression utility
+ii  hostname                       2.13                           A utility to set/show the host name or domain name
+ii  hotplug                        0.0.20040329-22                Linux Hotplug Scripts
+ii  iamerican                      3.1.20.0-4                     An American English dictionary for ispell
+ii  ibritish                       3.1.20.0-4                     A British English dictionary for ispell
+ii  ifupdown                       0.6.7                          high level tools to configure network interfaces
+ii  info                           4.7-2.2                        Standalone GNU Info documentation browser
+ii  initrd-tools                   0.1.81.1                       tools to create initrd image for prepackaged Linux kernel
+ii  initscripts                    2.86.ds1-1                     Standard scripts needed for booting and shutting down
+ii  ipchains                       1.3.10-15                      Network firewalling for Linux 2.2.x
+ii  iptables                       1.2.11-10                      Linux kernel 2.4+ iptables administration tools
+ii  iputils-ping                   20020927-2                     Tools to test the reachability of network hosts
+ii  ispell                         3.1.20.0-4                     International Ispell (an interactive spelling corrector)
+ii  kernel-image-2.4.27-2-386      2.4.27-10                      Linux kernel image for version 2.4.27 on 386
+ii  klogd                          1.4.1-17                       Kernel Logging Daemon
+ii  less                           382-1                          Pager program similar to more
+ii  libacl1                        2.2.23-1                       Access control list shared library
+ii  libapache2-mod-php4            4.3.10-16                      server-side, HTML-embedded scripting language (apache 2.0 module)
+ii  libapache2-mod-perl2           1.999.21-1                     Integration of perl with the Apache2 web server
+ii  libapache2-mod-python          3.1.3-3                        An Apache module that embeds Python within the server
+ii  libapache2-mod-python2.3       3.1.3-3                        An Apache 2 module that embeds Python 2.3 within the server
+ii  libapr0                        2.0.54-5                       the Apache Portable Runtime
+ii  libattr1                       2.4.16-1                       Extended attribute shared library
+ii  libblkid1                      1.37-2sarge1                   block device id library
+ii  libbz2-1.0                     1.0.2-7                        high-quality block-sorting file compressor library - runtime
+ii  libc6                          2.3.2.ds1-22                   GNU C Library: Shared libraries and Timezone data
+ii  libc6-dev                      2.3.2.ds1-22                   GNU C Library: Development Libraries and Header Files
+ii  libcap1                        1.10-14                        support for getting/setting POSIX.1e capabilities
+ii  libcomerr2                     1.37-2sarge1                   common error description library
+ii  libconsole                     0.2.3dbs-56                    Shared libraries for Linux console and font manipulation
+ii  libdb1-compat                  2.1.3-7                        The Berkeley database routines [glibc 2.0/2.1 compatibility]
+ii  libdb3                         3.2.9-22                       Berkeley v3 Database Libraries [runtime]
+ii  libdb4.2                       4.2.52-18                      Berkeley v4.2 Database Libraries [runtime]
+ii  libdb4.3                       4.3.27-2                       Berkeley v4.3 Database Libraries [runtime]
+ii  libperl5.8                     5.8.4-8                        Shared Perl library
+ii  libdevel-symdump-perl          2.03-3                         Perl module for inspecting perl's symbol table
+ii  libdiscover1                   1.7.7                          hardware identification library
+ii  libdns16                       9.2.4-1                        DNS Shared Library used by BIND
+ii  libevent1                      1.0b-1.1                       An asynchronous event notification library
+ii  libexpat1                      1.95.8-3                       XML parsing C library - runtime library
+ii  libfreetype6                   2.1.7-2.4                      FreeType 2 font engine, shared library files
+ii  libgc1                         6.4-1                          conservative garbage collector for C and C++
+ii  libgcc1                        3.4.3-13                       GCC support library
+ii  libgcrypt11                    1.2.0-11.1                     LGPL Crypto library - runtime library
+ii  libgd2-noxpm                   2.0.33-1.1                     GD Graphics Library version 2 (without XPM support)
+ii  libgdbm3                       1.8.3-2                        GNU dbm database routines (runtime version)
+ii  libgnutls11                    1.0.16-13.1                    GNU TLS library - runtime library
+ii  libgpg-error0                  1.0-1                          library for common error values and messages in GnuPG components
+ii  libgpmg1                       1.19.6-19sarge1                General Purpose Mouse - shared library
+ii  libhtml-parser-perl            3.45-2                         A collection of modules that parse HTML text documents
+ii  libhtml-tagset-perl            3.04-1                         Data tables pertaining to HTML
+ii  libhtml-tree-perl              3.18-1                         represent and create HTML syntax trees
+ii  libident                       0.22-3                         simple RFC1413 client library - runtime
+ii  libidn11                       0.5.13-1.0                     GNU libidn library, implementation of IETF IDN specifications
+ii  libisc7                        9.2.4-1                        ISC Shared Library used by BIND
+ii  libjpeg62                      6b-10                          The Independent JPEG Group's JPEG runtime library
+ii  libkrb53                       1.3.6-2sarge2                  MIT Kerberos runtime libraries
+ii  libldap-2.2-7                  2.2.23-8                       OpenLDAP libraries
+ii  libldap2                       2.1.30-8                       OpenLDAP libraries
+ii  liblocale-gettext-perl         1.01-17                        Using libc functions for internationalization in Perl
+ii  liblockfile1                   1.06                           NFS-safe locking library, includes dotlockfile program
+ii  liblwres1                      9.2.4-1                        Lightweight Resolver Library used by BIND
+ii  liblzo1                        1.08-1.2                       A real-time data compression library
+ii  libmagic1                      4.12-1                         File type determination library using "magic" numbers
+ii  libncurses5                    5.4-4                          Shared libraries for terminal handling
+ii  libncursesw5                   5.4-4                          Shared libraries for terminal handling (wide character support)
+ii  libnewt0.51                    0.51.6-20                      Not Erik's Windowing Toolkit - text mode windowing with slang
+ii  libnfsidmap1                   0.8-1                          An nfs idmapping library
+ii  libnss-db                      2.2-6.3                        DB Name Service Module
+ii  libopencdk8                    0.5.5-10                       Open Crypto Development Kit (OpenCDK) (runtime)
+ii  libpam-modules                 0.76-22                        Pluggable Authentication Modules for PAM
+ii  libpam-runtime                 0.76-22                        Runtime support for the PAM library
+ii  libpam0g                       0.76-22                        Pluggable Authentication Modules library
+ii  libpcap0.7                     0.7.2-7                        System interface for user-level packet capture
+ii  libpcre3                       4.5-1.2sarge1                  Perl 5 Compatible Regular Expression Library - runtime files
+ii  libpng12-0                     1.2.8rel-1                     PNG library - runtime
+ii  libpopt0                       1.7-5                          lib for parsing cmdline parameters
+ii  libreadline4                   4.3-11                         GNU readline and history libraries, run-time libraries
+ii  libreadline5                   5.0-10                         GNU readline and history libraries, run-time libraries
+ii  libsasl2                       2.1.19-1.5                     Authentication abstraction library
+ii  libsigc++-1.2-5c102            1.2.5-4                        type-safe Signal Framework for C++ - runtime
+ii  libss2                         1.37-2sarge1                   command-line interface parsing library
+ii  libssl0.9.7                    0.9.7e-3sarge1                 SSL shared libraries
+ii  libstdc++5                     3.3.5-13                       The GNU Standard C++ Library v3
+ii  libstdc++5-3.3-dev             3.3.5-13                       The GNU Standard C++ Library v3 (development files)
+ii  libtasn1-0                     0.1.2-5                        Manage ASN.1 structures (runtime)
+ii  libtasn1-2                     0.2.10-3                       Manage ASN.1 structures (runtime)
+ii  libtext-charwidth-perl         0.04-1                         get display widths of characters on the terminal
+ii  libtext-iconv-perl             1.2-3                          Convert between character sets in Perl
+ii  libtext-wrapi18n-perl          0.06-1                         internationalized substitute of Text::Wrap
+ii  libtextwrap1                   0.1-1                          text-wrapping library with i18n - runtime
+ii  liburi-perl                    1.35-1                         Manipulates and accesses URI strings
+ii  libusb-0.1-4                   0.1.10a-9.sarge.1              userspace USB programming library
+ii  libuuid1                       1.37-2sarge1                   universally unique id library
+ii  libwrap0                       7.6.dbs-8                      Wietse Venema's TCP wrappers library
+ii  libwww-perl                    5.803-4                        WWW client/server library for Perl (aka LWP)
+ii  libzzip-0-12                   0.12.83-4                      library providing read access on ZIP-archives - library
+ii  linux-kernel-headers           2.5.999-test7-bk-17            Linux Kernel Headers for development
+ii  locales                        2.3.2.ds1-22                   GNU C Library: National Language (locale) data [support]
+ii  login                          4.0.3-31sarge5                 system login tools
+ii  logrotate                      3.7-5                          Log rotation utility
+ii  lpr                            2003.09.23-7                   BSD lpr/lpd line printer spooling system
+ii  lsof                           4.74.dfsg.3-2                  List open files.
+ii  m4                             1.4.2-1                        a macro processing language
+ii  mailx                          8.1.2-0.20040524cvs-4          A simple mail user agent
+ii  make                           3.80-9                         The GNU version of the "make" utility.
+ii  makedev                        2.3.1-77                       creates device files in /dev
+ii  man-db                         2.4.2-21                       The on-line manual pager
+ii  manpages                       1.70-1                         Manual pages about using a GNU/Linux system
+ii  manpages-dev                   1.70-1                         Manual pages about using GNU/Linux for development
+ii  mawk                           1.3.3-11                       a pattern scanning and text processing language
+ii  mime-support                   3.28-1                         MIME files 'mime.types' & 'mailcap', and support programs
+ii  module-init-tools              3.2-pre1-2                     tools for managing Linux kernel modules
+ii  modutils                       2.4.26-1.2                     Linux module utilities
+ii  mount                          2.12p-4sarge1                  Tools for mounting and manipulating filesystems
+ii  mpack                          1.6-1                          tools for encoding/decoding MIME messages
+ii  mtools                         3.9.9-2.1                      Tools for manipulating MSDOS files
+ii  mtr-tiny                       0.67-1                         Full screen ncurses traceroute tool
+ii  mutt                           1.5.9-2                        Text-based mailreader supporting MIME, GPG, PGP and threading
+ii  nano                           1.2.4-5                        free Pico clone with some new features
+ii  ncurses-base                   5.4-4                          Descriptions of common terminal types
+ii  ncurses-bin                    5.4-4                          Terminal-related programs and man pages
+ii  ncurses-term                   5.4-4                          Additional terminal type definitions
+ii  net-tools                      1.60-10                        The NET-3 networking toolkit
+ii  netbase                        4.21                           Basic TCP/IP networking system
+ii  netkit-inetd                   0.10-10                        The Internet Superserver
+ii  nfs-common                     1.0.6-3.1                      NFS support files common to client and server
+ii  nvi                            1.79-22                        4.4BSD re-implementation of vi
+ii  openssl                        0.9.7e-3sarge1                 Secure Socket Layer (SSL) binary and related cryptographic tools
+ii  passwd                         4.0.3-31sarge5                 change and administer password and group data
+ii  patch                          2.5.9-2                        Apply a diff file to an original
+ii  pciutils                       2.1.11-15                      Linux PCI Utilities
+ii  perl                           5.8.4-8                        Larry Wall's Practical Extraction and Report Language
+ii  perl-base                      5.8.4-8                        The Pathologically Eclectic Rubbish Lister
+ii  perl-modules                   5.8.4-8                        Core Perl modules
+ii  php4-cli                       4.3.10-16                      command-line interpreter for the php4 scripting language
+ii  php4-common                    4.3.10-16                      Common files for packages built from the php4 source
+ii  php4-pear                      4.3.10-16                      PEAR - PHP Extension and Application Repository
+ii  pidentd                        3.0.18-2                       TCP/IP IDENT protocol server with DES support
+ii  portmap                        5-9                            The RPC portmapper
+ii  procmail                       3.22-11                        Versatile e-mail processor
+ii  procps                         3.2.1-2                        The /proc file system utilities
+ii  psmisc                         21.5-1                         Utilities that use the proc filesystem
+ii  python                         2.3.5-2                        An interactive high-level object-oriented language (default version)
+ii  python-newt                    0.51.6-20                      A NEWT module for Python
+ii  python2.3                      2.3.5-3sarge1                  An interactive high-level object-oriented language (version 2.3)
+ii  rcs                            5.7-15                         The GNU Revision Control System
+ii  reportbug                      3.8                            reports bugs in the Debian distribution
+ii  sed                            4.1.2-8                        The GNU sed stream editor
+ii  sharutils                      4.2.1-13                       shar, unshar, uuencode, uudecode
+ii  slang1                         1.4.9dbs-8                     The S-Lang programming library - runtime version
+ii  slang1a-utf8                   1.4.9dbs-8                     The S-Lang programming library with utf8 support
+ii  ssh                            3.8.1p1-8.sarge.4              Secure rlogin/rsh/rcp replacement (OpenSSH)
+ii  ssl-cert                       1.0-11                         Simple debconf wrapper for openssl
+ii  strace                         4.5.8-1.2                      A system call tracer
+ii  sysklogd                       1.4.1-17                       System Logging Daemon
+ii  sysv-rc                        2.86.ds1-1                     Standard boot mechanism using symlinks in /etc/rc?.d
+ii  sysvinit                       2.86.ds1-1                     System-V like init
+ii  tar                            1.14-2                         GNU tar
+ii  tasksel                        2.24                           Tool for selecting tasks for installation on Debian system
+ii  tcpd                           7.6.dbs-8                      Wietse Venema's TCP wrapper utilities
+ii  tcsh                           6.13.00-1                      TENEX C Shell, an enhanced version of Berkeley csh
+ii  telnet                         0.17-29                        The telnet client
+ii  texinfo                        4.7-2.2                        Documentation system for on-line information and printed output
+ii  time                           1.7-21                         The GNU time program for measuring cpu resource usage
+ii  traceroute                     1.4a12-18                      traces the route taken by packets over a TCP/IP network
+ii  usbutils                       0.70-8                         USB console utilities
+ii  util-linux                     2.12p-4sarge1                  Miscellaneous system utilities
+ii  w3m                            0.5.1-3                        WWW browsable pager with excellent tables/frames support
+ii  wamerican                      5-4                            American English dictionary words for /usr/share/dict
+ii  wget                           1.9.1-12                       retrieves files from the web
+ii  whiptail                       0.51.6-20                      Displays user-friendly dialog boxes from shell scripts
+ii  whois                          4.7.5                          the GNU whois client
+ii  zlib1g                         1.2.2-4.sarge.2                compression library - runtime
++++-==============================-==============================-============================================================================
