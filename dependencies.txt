@@ -4,11 +4,9 @@ Dependencies of MIRAGE:
 
 Apache2 + PHP4 + PEAR::XML_SERIALIZER + PERL
 
-
 -------------------------------------------
 Developed over the following system:
 -------------------------------------------
-
 Debian 3.1 (Sarge) installed from:
 
 http://iso.linuxquestions.org/download/http/mirrors.usc.edu/debian-31r0a-i386-netinst.iso (MD5SUM:aa3279af427fd0c6dcbdcf08d0115d90)
@@ -306,3 +304,4 @@ ii  whiptail                       0.51.6-20                      Displays user-
 ii  whois                          4.7.5                          the GNU whois client
 ii  zlib1g                         1.2.2-4.sarge.2                compression library - runtime
 +++-==============================-==============================-============================================================================
+
