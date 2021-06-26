@@ -33,7 +33,7 @@ A:hover   { text-decoration:none; color:#FF0000 }
 <!--MIRAGE banner -->
 <a href="/mirage"><FONT color="#ffffff"><b>MIRAGE</a> v<font size-=1>0.1.8</font> -- misconfiguration manager</b><br></font></TD>
 <TD colspan=1 bgcolor="#156da6" align=right valign=top>
-<a href="/mirage"><FONT color="#ffffff"><b>x</a></font></TD>
+<a href="/mirage"><FONT color="#ffffff"><b>x</a></font></TD> 
 </TR>
 
 <tr bgcolor="#ccddff">
