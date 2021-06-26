@@ -47,6 +47,6 @@ If using this code for research purposes, please cite:
 
 [1] F. Cuppens, N. Cuppens-Boulahia, J. Garcia-Alfaro, T. Moataz, X. Rimasson, "Handling Stateful Firewall Anomalies," 27th IFIP TC-11 International Information Security Conference (IFIPsec 2012), pp. 174-186, https://doi.org/10.1007/978-3-642-30436-1_15, Crete, Greece, June 2012.
 
-[2] J. Garcia-Alfaro, F. Cuppens, N. Cuppens, S. Preda, "MIRAGE: A Management Tool for the Analysis and Deployment of Network Security Policies," 3rd SETOP International Workshop on Autonomous and Spontaneous Security, 15th European Symposium On Research In Computer Security (Esorics 2010), pp. 203-215, http://dx.doi.org/10.1007/978-3-642-19348-4_15, Athens, Greece, September 2010.
+[2] J. Garcia-Alfaro, F. Cuppens, N. Cuppens, S. Preda, "MIRAGE: A Management Tool for the Analysis and Deployment of Network Security Policies," 3rd SETOP Workshop, 15th European Symposium On Research In Computer Security (Esorics 2010), pp. 203-215, http://dx.doi.org/10.1007/978-3-642-19348-4_15, Athens, Greece, September 2010.
 
 [3] J. Garcia-Alfaro, F. Cuppens, and N. Cuppens, "Analysis of Policy Anomalies on Distributed Network Security Setups," 11th European Symposium On Research In Computer Security (Esorics 2006), pp. 496-511, https://doi.org/10.1007/11863908_30, Hamburg, Germany, September 2006.
