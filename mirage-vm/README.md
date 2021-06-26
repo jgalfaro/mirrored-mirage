@@ -2,7 +2,7 @@
 
 MIRAGE is an audit tool for the analysis of network security policies deployed over network security components, such as firewalls and intrusion detection systems. It implements an analysis of components' configurations to detect anomalies on their deployment. 
 
-The virtual machine running MIRAGEr2010 is <a href="https://drive.google.com/drive/folders/1agAoSZ8VNFxYcUBNVQCmJfrd-7zthF-J?usp=sharing">available online</a> 
+A virtual machine (for VirtualBox and VMware) running MIRAGEr2010 is <a href="https://drive.google.com/drive/folders/1agAoSZ8VNFxYcUBNVQCmJfrd-7zthF-J?usp=sharing">available online</a>.
 
 # References
 
