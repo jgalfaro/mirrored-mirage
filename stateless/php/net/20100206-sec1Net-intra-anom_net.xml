@@ -1,0 +1,994 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<network_model>
+ <components>
+  <fw name="C1" type="Firewall">
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.2.1,1.0.2.30</s>
+      <d>1.0.3.20,1.0.3.45</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.2.20,1.0.2.60</s>
+      <d>1.0.3.25,1.0.3.35</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>accept</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.2.30,1.0.2.70</s>
+      <d>1.0.3.20,1.0.3.45</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>accept</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.2.15,1.0.2.45</s>
+      <d>1.0.3.25,1.0.3.30</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.1.0,1.0.1.255</s>
+      <d>2.0.12.0,2.0.12.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>accept</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.2.0,1.0.2.255</s>
+      <d>2.0.12.0,2.0.12.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>accept</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.3.20,1.0.3.33</s>
+      <d>1.0.1.20,1.0.1.30</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>accept</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.3.60,1.0.3.80</s>
+      <d>1.0.1.20,1.0.1.30</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>accept</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>2.0.11.0,2.0.11.30</s>
+      <d>1.0.2.10,1.0.2.30</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>accept</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>2.0.9.10,2.0.9.20</s>
+      <d>1.0.1.0,1.0.1.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>accept</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>2.0.11.0,2.0.11.255</s>
+      <d>1.0.1.10,1.0.1.12</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>accept</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+  <policy>close</policy>
+  </fw>
+  <fw name="C2" type="Firewall">
+   <rule>
+    <condition>
+     <subcondition>
+      <s>2.0.9.15,2.0.9.17</s>
+      <d>1.0.1.0,1.0.1.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>accept</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>2.0.10.0,2.0.10.70</s>
+      <d>2.0.7.0,2.0.7.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>accept</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>2.0.10.0,2.0.10.70</s>
+      <d>1.0.2.0,1.0.2.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>accept</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>2.0.11.0,2.0.11.255</s>
+      <d>1.0.1.0,1.0.1.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>accept</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>2.0.10.0,2.0.10.70</s>
+      <d>2.0.4.0,2.0.4.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>accept</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.1.0,1.0.2.255</s>
+      <d>2.0.12.0,2.0.12.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>accept</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+  <policy>close</policy>
+  </fw>
+  <fw name="C3" type="NIDS">
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.3.20,1.0.3.33</s>
+      <d>2.0.1.20,2.0.1.30</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>accept</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc>msg: "SSH allowed activity"; content:"SSH-"; classtype:allowed-activity;</nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.3.60,1.0.3.80</s>
+      <d>2.0.1.20,2.0.1.30</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>accept</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc>msg: "SSH allowed activity"; content:"SSH-"; classtype:allowed-activity;</nids_misc>
+   </rule>
+  <policy>close</policy>
+  </fw>
+  <fw name="C4" type="NIDS">
+   <rule>
+    <condition>
+     <subcondition>
+      <s>2.0.10.10,2.0.10.10</s>
+      <d>2.0.4.0,2.0.4.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,1</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc>msg:"WEB-ATTACKS /usr/bin/id command attempt"; flow:to_server,established; content:"/usr/bin/id"; nocase; classtype:web-application-attack; sid:1332; rev:5;</nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>2.0.10.60,2.0.10.80</s>
+      <d>2.0.4.0,2.0.4.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc>msg:"WEB-ATTACKS /usr/bin/id command attempt"; flow:to_server,established; content:"/usr/bin/id"; nocase; classtype:web-application-attack; sid:1332; rev:5;</nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.4.15,1.0.4.30</s>
+      <d>2.0.3.0,2.0.3.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc>msg:"WEB-ATTACKS /usr/bin/id command attempt"; flow:to_server,established; content:"/usr/bin/id"; nocase; classtype:web-application-attack; sid:1332; rev:5;</nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.5.0,1.0.5.255</s>
+      <d>2.0.3.0,2.0.3.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc>msg:"WEB-ATTACKS /usr/bin/id command attempt"; flow:to_server,established; content:"/usr/bin/id"; nocase; classtype:web-application-attack; sid:1332; rev:5;</nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.3.18,1.0.3.20</s>
+      <d>2.0.5.0,2.0.5.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc>msg:"WEB-ATTACKS /usr/bin/id command attempt"; flow:to_server,established; content:"/usr/bin/id"; nocase; classtype:web-application-attack; sid:1332; rev:5;</nids_misc>
+   </rule>
+  <policy>open</policy>
+  </fw>
+  <fw name="C5" type="Firewall">
+   <rule>
+    <condition>
+     <subcondition>
+      <s>2.0.10.10,2.0.10.10</s>
+      <d>2.0.7.0,2.0.7.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,1</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>2.0.10.60,2.0.10.80</s>
+      <d>2.0.7.0,2.0.7.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.4.15,1.0.4.30</s>
+      <d>2.0.6.0,2.0.6.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.5.0,1.0.5.255</s>
+      <d>2.0.6.0,2.0.6.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.3.18,1.0.3.20</s>
+      <d>2.0.8.0,2.0.8.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+  <policy>open</policy>
+  </fw>
+  <fw name="C6" type="Firewall">
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.4.0,1.0.4.255</s>
+      <d>2.0.6.0,2.0.6.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.5.18,1.0.5.20</s>
+      <d>2.0.6.0,2.0.6.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.3.10,1.0.3.20</s>
+      <d>1.0.1.0,1.0.1.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.3.21,1.0.3.70</s>
+      <d>1.0.1.0,1.0.1.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.4.0,1.0.4.255</s>
+      <d>2.0.3.0,2.0.3.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.5.18,1.0.5.20</s>
+      <d>2.0.3.0,2.0.3.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.3.10,1.0.3.23</s>
+      <d>2.0.1.0,2.0.1.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+   <rule>
+    <condition>
+     <subcondition>
+      <s>1.0.3.24,1.0.3.60</s>
+      <d>2.0.1.0,2.0.1.255</d>
+      <sP>1,65535</sP>
+      <dP>1,65535</dP>
+      <p>1,2</p>
+     </subcondition>
+     <subcondition>
+     </subcondition>
+    </condition>
+    <decision>deny</decision>
+    <shadowing>false</shadowing>
+    <redundancy>false</redundancy>
+    <nids_misc></nids_misc>
+   </rule>
+  <policy>open</policy>
+  </fw>
+ </components>
+ <zones>
+  <zone name="ZE1">
+   <included>
+    1.0.1.0/24,1.0.2.0/24   </included>
+   <excluded>
+       </excluded>
+   <vulnerabilities>
+   </vulnerabilities>
+  </zone>
+  <zone name="ZE2">
+   <included>
+    1.0.3.0/24,1.0.4.0/24,1.0.5.0/24   </included>
+   <excluded>
+       </excluded>
+   <vulnerabilities>
+   </vulnerabilities>
+  </zone>
+  <zone name="ZP1">
+   <included>
+    2.0.1.0/24,2.0.2.0/24   </included>
+   <excluded>
+       </excluded>
+   <vulnerabilities>
+   </vulnerabilities>
+  </zone>
+  <zone name="ZP2">
+   <included>
+    2.0.3.0/24,2.0.4.0/24,2.0.5.0/24   </included>
+   <excluded>
+       </excluded>
+   <vulnerabilities>
+   </vulnerabilities>
+  </zone>
+  <zone name="ZP3">
+   <included>
+    2.0.6.0/24,2.0.7.0/24,2.0.8.0/24   </included>
+   <excluded>
+       </excluded>
+   <vulnerabilities>
+   </vulnerabilities>
+  </zone>
+  <zone name="ZP4">
+   <included>
+    2.0.9.0/24,2.0.10.0/24,2.0.11.0/24   </included>
+   <excluded>
+       </excluded>
+   <vulnerabilities>
+   </vulnerabilities>
+  </zone>
+  <zone name="ZP5">
+   <included>
+    2.0.12.0/24   </included>
+   <excluded>
+       </excluded>
+   <vulnerabilities>
+   </vulnerabilities>
+  </zone>
+  <zone name="Zbnorth">
+   <included>
+    FF:FF:FF:FF:FF:FF/0   </included>
+   <excluded>
+       </excluded>
+   <vulnerabilities>
+   </vulnerabilities>
+  </zone>
+  <zone name="Zbwest">
+   <included>
+    FF:FF:FF:FF:FF:FF/0   </included>
+   <excluded>
+       </excluded>
+   <vulnerabilities>
+   </vulnerabilities>
+  </zone>
+  <zone name="Zbeast1">
+   <included>
+    FF:FF:FF:FF:FF:FF/0   </included>
+   <excluded>
+       </excluded>
+   <vulnerabilities>
+   </vulnerabilities>
+  </zone>
+  <zone name="Zbeast2">
+   <included>
+    FF:FF:FF:FF:FF:FF/0   </included>
+   <excluded>
+       </excluded>
+   <vulnerabilities>
+   </vulnerabilities>
+  </zone>
+  <zone name="Zbsouth1">
+   <included>
+    FF:FF:FF:FF:FF:FF/0   </included>
+   <excluded>
+       </excluded>
+   <vulnerabilities>
+   </vulnerabilities>
+  </zone>
+  <zone name="Zbsouth2">
+   <included>
+    FF:FF:FF:FF:FF:FF/0   </included>
+   <excluded>
+       </excluded>
+   <vulnerabilities>
+   </vulnerabilities>
+  </zone>
+ </zones>
+ <routes>
+  <mr zone="ZE1,ZE2">
+   <content> C1,C6 </content>
+  </mr>
+  <mr zone="ZE1,ZP1">
+   <content> C1,C3 </content>
+  </mr>
+  <mr zone="ZE1,ZP2">
+   <content> C1,C4 </content>
+  </mr>
+  <mr zone="ZE1,ZP3">
+   <content> C1,C6,C5 </content>
+  </mr>
+  <mr zone="ZE1,ZP4">
+   <content> C1,C2 </content>
+  </mr>
+  <mr zone="ZE1,ZP5">
+   <content> C1,C2 </content>
+  </mr>
+  <mr zone="ZE1,Zbnorth">
+   <content> C1 </content>
+  </mr>
+  <mr zone="ZE1,Zbwest">
+   <content> C1 </content>
+  </mr>
+  <mr zone="ZE1,Zbeast1">
+   <content> C1,C6 </content>
+  </mr>
+  <mr zone="ZE1,Zbeast2">
+   <content> C1,C6 </content>
+  </mr>
+  <mr zone="ZE1,Zbsouth1">
+   <content> C1,C2 </content>
+  </mr>
+  <mr zone="ZE1,Zbsouth2">
+   <content> C1,C6 </content>
+  </mr>
+  <mr zone="ZE2,ZP1">
+   <content> C6,C3 </content>
+  </mr>
+  <mr zone="ZE2,ZP2">
+   <content> C6,C4 </content>
+  </mr>
+  <mr zone="ZE2,ZP3">
+   <content> C6,C5 </content>
+  </mr>
+  <mr zone="ZE2,ZP4">
+   <content> C6,C2 </content>
+  </mr>
+  <mr zone="ZE2,ZP5">
+   <content> C6,C2 </content>
+  </mr>
+  <mr zone="ZE2,Zbnorth">
+   <content> C6 </content>
+  </mr>
+  <mr zone="ZE2,Zbwest">
+   <content> C6,C1 </content>
+  </mr>
+  <mr zone="ZE2,Zbeast1">
+   <content> C6 </content>
+  </mr>
+  <mr zone="ZE2,Zbeast2">
+   <content> C6 </content>
+  </mr>
+  <mr zone="ZE2,Zbsouth1">
+   <content> C6,C5 </content>
+  </mr>
+  <mr zone="ZE2,Zbsouth2">
+   <content> C6 </content>
+  </mr>
+  <mr zone="ZP1,ZP2">
+   <content> C3,C1,C4 </content>
+  </mr>
+  <mr zone="ZP1,ZP3">
+   <content> C3,C6,C5 </content>
+  </mr>
+  <mr zone="ZP1,ZP4">
+   <content> C3,C1,C2 </content>
+  </mr>
+  <mr zone="ZP1,ZP5">
+   <content> C3,C1,C2 </content>
+  </mr>
+  <mr zone="ZP1,Zbnorth">
+   <content> C3 </content>
+  </mr>
+  <mr zone="ZP1,Zbwest">
+   <content> C3,C1 </content>
+  </mr>
+  <mr zone="ZP1,Zbeast1">
+   <content> C3,C6 </content>
+  </mr>
+  <mr zone="ZP1,Zbeast2">
+   <content> C3,C6 </content>
+  </mr>
+  <mr zone="ZP1,Zbsouth1">
+   <content> C3,C1,C2 </content>
+  </mr>
+  <mr zone="ZP1,Zbsouth2">
+   <content> C3,C6 </content>
+  </mr>
+  <mr zone="ZP2,ZP3">
+   <content> C4,C2,C5 </content>
+  </mr>
+  <mr zone="ZP2,ZP4">
+   <content> C4,C2 </content>
+  </mr>
+  <mr zone="ZP2,ZP5">
+   <content> C4,C2 </content>
+  </mr>
+  <mr zone="ZP2,Zbnorth">
+   <content> C4,C1 </content>
+  </mr>
+  <mr zone="ZP2,Zbwest">
+   <content> C4 </content>
+  </mr>
+  <mr zone="ZP2,Zbeast1">
+   <content> C4 </content>
+  </mr>
+  <mr zone="ZP2,Zbeast2">
+   <content> C4,C6 </content>
+  </mr>
+  <mr zone="ZP2,Zbsouth1">
+   <content> C4,C2 </content>
+  </mr>
+  <mr zone="ZP2,Zbsouth2">
+   <content> C4,C2 </content>
+  </mr>
+  <mr zone="ZP3,ZP4">
+   <content> C5,C2 </content>
+  </mr>
+  <mr zone="ZP3,ZP5">
+   <content> C5,C2 </content>
+  </mr>
+  <mr zone="ZP3,Zbnorth">
+   <content> C5,C6 </content>
+  </mr>
+  <mr zone="ZP3,Zbwest">
+   <content> C5,C2 </content>
+  </mr>
+  <mr zone="ZP3,Zbeast1">
+   <content> C5,C6 </content>
+  </mr>
+  <mr zone="ZP3,Zbeast2">
+   <content> C5 </content>
+  </mr>
+  <mr zone="ZP3,Zbsouth1">
+   <content> C5 </content>
+  </mr>
+  <mr zone="ZP3,Zbsouth2">
+   <content> C5,C6 </content>
+  </mr>
+  <mr zone="ZP4,ZP5">
+   <content> C2 </content>
+  </mr>
+  <mr zone="ZP4,Zbnorth">
+   <content> C2,C1 </content>
+  </mr>
+  <mr zone="ZP4,Zbwest">
+   <content> C2 </content>
+  </mr>
+  <mr zone="ZP4,Zbeast1">
+   <content> C2,C4 </content>
+  </mr>
+  <mr zone="ZP4,Zbeast2">
+   <content> C2,C5 </content>
+  </mr>
+  <mr zone="ZP4,Zbsouth1">
+   <content> C2 </content>
+  </mr>
+  <mr zone="ZP4,Zbsouth2">
+   <content> C2 </content>
+  </mr>
+  <mr zone="ZP5,Zbnorth">
+   <content> C2,C1 </content>
+  </mr>
+  <mr zone="ZP5,Zbwest">
+   <content> C2 </content>
+  </mr>
+  <mr zone="ZP5,Zbeast1">
+   <content> C2,C4 </content>
+  </mr>
+  <mr zone="ZP5,Zbeast2">
+   <content> C2,C5 </content>
+  </mr>
+  <mr zone="ZP5,Zbsouth1">
+   <content> C2 </content>
+  </mr>
+  <mr zone="ZP5,Zbsouth2">
+   <content> C2 </content>
+  </mr>
+  <mr zone="Zbnorth,Zbwest">
+   <content> C1 </content>
+  </mr>
+  <mr zone="Zbnorth,Zbeast1">
+   <content> C6 </content>
+  </mr>
+  <mr zone="Zbnorth,Zbeast2">
+   <content> C6 </content>
+  </mr>
+  <mr zone="Zbnorth,Zbsouth1">
+   <content> C1,C2 </content>
+  </mr>
+  <mr zone="Zbnorth,Zbsouth2">
+   <content> C6 </content>
+  </mr>
+  <mr zone="Zbwest,Zbeast1">
+   <content> C4 </content>
+  </mr>
+  <mr zone="Zbwest,Zbeast2">
+   <content> C1,C6 </content>
+  </mr>
+  <mr zone="Zbwest,Zbsouth1">
+   <content> C2 </content>
+  </mr>
+  <mr zone="Zbwest,Zbsouth2">
+   <content> C2 </content>
+  </mr>
+  <mr zone="Zbeast1,Zbeast2">
+   <content> C6 </content>
+  </mr>
+  <mr zone="Zbeast1,Zbsouth1">
+   <content> C4,C2 </content>
+  </mr>
+  <mr zone="Zbeast1,Zbsouth2">
+   <content> C6 </content>
+  </mr>
+  <mr zone="Zbeast2,Zbsouth1">
+   <content> C5 </content>
+  </mr>
+  <mr zone="Zbeast2,Zbsouth2">
+   <content> C6 </content>
+  </mr>
+  <mr zone="Zbsouth1,Zbsouth2">
+   <content> C2 </content>
+  </mr>
+ </routes>
+</network_model>

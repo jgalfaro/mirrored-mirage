@@ -1,0 +1,23 @@
+## Copyright (C) 2005, 2006 seres@ents-bretagne.fr
+#<id>
+#<comment>
+#<description>
+#<creation_time>
+#<last_modification_time>
+#<created_by>
+#<last_scan_time>
+#<scanned_by>
+#<discovery_method>
+<net_status_enum>
+#<name>
+<is_dynamic>
+#<type_enum>
+#<network_label>
+<is_connectable>
+#<host_id>
+#<network_id>
+<service_ids>
+<access_rule_ids>
+<source_access_rule_ids>
+<applied_policy_based_routing_rule_ids>
+<outgoing_policy_based_routing_rule_ids>

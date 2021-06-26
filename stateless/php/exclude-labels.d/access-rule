@@ -1,0 +1,24 @@
+## Copyright (C) 2005, 2006 seres@ents-bretagne.fr
+#<id>
+#<creation_time>
+#<last_modification_time>
+#<created_by>
+<rule_order>
+#<action_type_enum>
+#<direction_type_enum>
+#<source_ip_space_ip_ranges>
+<source_ip_space_is_negated>
+<source_ip_space_original_text>
+#<target_ip_space_ip_ranges>
+<target_ip_space_is_negated>
+<target_ip_space_original_text>
+#<firewall_space_firewall_services>
+<firewall_space_is_negated>
+<firewall_space_original_text>
+#<is_implied>
+#<is_disabled>
+<is_filtering>
+<is_unsupported>
+#<original_rule_text>
+#<chain_number>
+#<host_id>
