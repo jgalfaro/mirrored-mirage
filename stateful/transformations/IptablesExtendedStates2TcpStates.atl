@@ -1,0 +1,100 @@
+-- @path Network=/atlanmod.firewall.stateful.examples/metamodels/network.ecore
+
+module IptablesExtendedStates2TcpStates;
+create OUT : Network refining IN : Network;
+
+rule IptablesNone2TcpListen{
+	from 
+		s: Network!State (s.name = 'NONE' and 
+			s.refImmediateComposite().setFlags->size() = 1 and 
+			s.refImmediateComposite().setFlags->exists(e | e.name = 'SYN'))
+	to
+		t: Network!State (
+			name <- 'LISTEN'
+		)
+}
+
+rule IptablesSYN_SENT2TcpRequest{
+	from 
+		s: Network!State (s.name = 'SYN_SENT' and 
+			s.refImmediateComposite().setFlags->size() = 2 and 
+			s.refImmediateComposite().setFlags->exists(e | e.name = 'SYN') and
+			s.refImmediateComposite().setFlags->exists(e | e.name = 'ACK'))
+	to
+		t: Network!State (
+			name <- 'REQUEST'
+		)
+}
+
+rule IptablesSYN_RECV2TcpEstablished{
+	from 
+		s: Network!State (s.name = 'SYN_RECV' and 
+			s.refImmediateComposite().setFlags->size() = 1 and 
+			s.refImmediateComposite().setFlags->exists(e | e.name = 'ACK'))
+	to
+		t: Network!State (
+			name <- 'ESTABLISHED'
+		)
+}
+
+rule IptablesESTABLISHED2TcpTransfer{
+	from 
+		s: Network!State (s.name = 'ESTABLISHED' and 
+			s.refImmediateComposite().setFlags->size() = 1 and 
+			s.refImmediateComposite().setFlags->exists(e | e.name = 'ACK'))
+	to
+		t: Network!State (
+			name <- 'TRANSFER'
+		)
+}
+
+rule IptablesESTABLISHED2TcpTransfer2{
+	from 
+		s: Network!State (s.name = 'ESTABLISHED' and 
+			s.refImmediateComposite().setFlags->size() = 1 and 
+			s.refImmediateComposite().setFlags->exists(e | e.name = 'FIN'))
+	to
+		t: Network!State (
+			name <- 'TRANSFER'
+		)
+}
+
+rule IptablesFIN_WAITcpClosing{
+	from 
+		s: Network!State (s.name = 'FIN_WAIT' and 
+			s.refImmediateComposite().setFlags->size() = 2 and 
+			s.refImmediateComposite().setFlags->exists(e | e.name = 'FIN') and
+			s.refImmediateComposite().setFlags->exists(e | e.name = 'ACK'))
+	to
+		t: Network!State (
+			name <- 'CLOSING'
+		)
+}
+
+rule IptablesCLOSE_WAIT_WAITcpClosing{
+	from 
+		s: Network!State (s.name = 'CLOSE_WAIT' and 
+			s.refImmediateComposite().setFlags->size() = 2 and 
+			s.refImmediateComposite().setFlags->exists(e | e.name = 'FIN') and
+			s.refImmediateComposite().setFlags->exists(e | e.name = 'ACK'))
+	to
+		t: Network!State (
+			name <- 'CLOSING'
+		)
+}
+
+rule IptablesLAST_ACK2TcpClosed{
+	from 
+		s: Network!State (s.name = 'LAST_ACK' and 
+			s.refImmediateComposite().setFlags->size() = 1 and 
+			s.refImmediateComposite().setFlags->exists(e | e.name = 'ACK'))
+	to
+		t: Network!State (
+			name <- 'CLOSED'
+		)
+}
+
+
+
+
+

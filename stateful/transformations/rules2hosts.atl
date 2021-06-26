@@ -1,0 +1,65 @@
+-- @path NETWORK=/org.examples.transformation.Iptables2Policy/metamodels/network.ecore
+-- @path IPTABLES=/org.examples.transformation.Iptables2Policy/metamodels/Iptables.ecore
+
+module rules2network;
+create OUT : NETWORK from IN : IPTABLES;
+
+--rule ruleService2Conection{
+--	
+--	from s:IPTABLES!FilterSpec (s.chain.chainName = 'FORWARD')
+--	
+--	to t:NETWORK!Connection (
+--		--desHost <- s.ipDst--,	
+--		service <- s.destinationPort,
+--		kind <- #allow
+--	)
+--	--we create the connection as every rule of this kind will represent more or less one
+--	--connection, then, we will use unique lazy rules to create Hosts (or normal lazy rules
+--	--depending on the way we use to identify hosts. Maybe we can also make a second step to 
+--	--eliminate repeated)
+--}
+
+helper def : IpAddresses : Sequence(String) = 
+	IPTABLES!FilterSpec->allInstances()->collect(e| e.ip)->select(e | not e.oclIsUndefined() and e <> '')
+	->asSet()->union(IPTABLES!FilterSpec->allInstances()->collect(e| e.ipDst)->select(e | not e.oclIsUndefined() and e <> '')
+	->asSet())->asSequence()
+;
+
+helper def : IpDstAddresses : Sequence(String) = 
+	IPTABLES!FilterSpec->allInstances()->collect(e| e.ipDst)->select(e | not e.oclIsUndefined() and e <> '')
+	->asSet()->asSequence()
+;
+
+helper def : Hosts : Sequence(IPTABLES!FilterSpec) = 
+	IPTABLES!FilterSpec->allInstances()->select(e | thisModule.IpAddresses.includes(e.ip))->asSet()->asSequence()
+;
+
+--We try to find the returns inside a customChain. This are rules that perform an implicit deny of conetion
+--for the source IPs
+helper def : findChainReturns (CustomChainName:String) : Sequence(IPTABLES!FilterSpec) =
+	IPTABLES!FilterSpec->allInstances()->select(e | e.chain.chainName = CustomChainName)
+;
+
+helper def: counter : Integer = 0;
+
+helper def: createdHosts : Sequence(NETWORK!Host) = Sequence{}; 
+
+
+rule ModeltoNetwork{
+	from 
+		s:IPTABLES!Model
+	to
+		t:NETWORK!Network (
+			hosts <- thisModule.IpAddresses->collect(e | thisModule.ip2host(e))
+		)
+}
+
+
+lazy rule ip2host{
+	from
+	 	s:String
+	to
+		t:NETWORK!Host (
+			ipAddress <- s	
+		)
+}

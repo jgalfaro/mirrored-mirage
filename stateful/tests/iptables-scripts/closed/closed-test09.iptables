@@ -1,0 +1,121 @@
+iptables -P FORWARD DROP
+
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 11.2.3.4 -d 51.6.7.8 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+iptables -A FORWARD -p tcp -s 51.6.7.8 -d 11.2.3.4 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 11.2.3.4 -d 51.6.7.8 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 51.6.7.8 -d 11.2.3.4 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 11.2.3.4 -d 51.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 51.6.7.8 -d 11.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 12.2.3.4 -d 52.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT
+iptables -A FORWARD -p tcp -s 52.6.7.8 -d 12.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 12.2.3.4 -d 52.6.7.8 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+iptables -A FORWARD -p tcp -s 52.6.7.8 -d 12.2.3.4 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 12.2.3.4 -d 52.6.7.8 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 52.6.7.8 -d 12.2.3.4 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 12.2.3.4 -d 52.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 52.6.7.8 -d 12.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 12.2.3.4 -d 52.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT
+iptables -A FORWARD -p tcp -s 52.6.7.8 -d 12.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 13.2.3.4 -d 53.6.7.8 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+iptables -A FORWARD -p tcp -s 53.6.7.8 -d 13.2.3.4 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 13.2.3.4 -d 53.6.7.8 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 53.6.7.8 -d 13.2.3.4 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 13.2.3.4 -d 53.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 53.6.7.8 -d 13.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 13.2.3.4 -d 53.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT
+iptables -A FORWARD -p tcp -s 53.6.7.8 -d 13.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 14.2.3.4 -d 54.6.7.8 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+iptables -A FORWARD -p tcp -s 54.6.7.8 -d 14.2.3.4 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 14.2.3.4 -d 54.6.7.8 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 54.6.7.8 -d 14.2.3.4 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 14.2.3.4 -d 54.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 54.6.7.8 -d 14.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 14.2.3.4 -d 54.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT
+iptables -A FORWARD -p tcp -s 54.6.7.8 -d 14.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 15.2.3.4 -d 55.6.7.8 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+iptables -A FORWARD -p tcp -s 55.6.7.8 -d 15.2.3.4 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 15.2.3.4 -d 55.6.7.8 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 55.6.7.8 -d 15.2.3.4 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 15.2.3.4 -d 55.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 55.6.7.8 -d 15.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 15.2.3.4 -d 55.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT
+iptables -A FORWARD -p tcp -s 55.6.7.8 -d 15.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 16.2.3.4 -d 56.6.7.8 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+iptables -A FORWARD -p tcp -s 56.6.7.8 -d 16.2.3.4 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 16.2.3.4 -d 56.6.7.8 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 56.6.7.8 -d 16.2.3.4 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 16.2.3.4 -d 56.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 56.6.7.8 -d 16.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 16.2.3.4 -d 56.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT
+iptables -A FORWARD -p tcp -s 56.6.7.8 -d 16.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 17.2.3.4 -d 57.6.7.8 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+iptables -A FORWARD -p tcp -s 57.6.7.8 -d 17.2.3.4 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 17.2.3.4 -d 57.6.7.8 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 57.6.7.8 -d 17.2.3.4 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 17.2.3.4 -d 57.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 57.6.7.8 -d 17.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 17.2.3.4 -d 57.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT
+iptables -A FORWARD -p tcp -s 57.6.7.8 -d 17.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 18.2.3.4 -d 58.6.7.8 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+iptables -A FORWARD -p tcp -s 58.6.7.8 -d 18.2.3.4 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 18.2.3.4 -d 58.6.7.8 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 58.6.7.8 -d 18.2.3.4 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 18.2.3.4 -d 58.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 58.6.7.8 -d 18.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 18.2.3.4 -d 58.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT
+iptables -A FORWARD -p tcp -s 58.6.7.8 -d 18.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 19.2.3.4 -d 59.6.7.8 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+iptables -A FORWARD -p tcp -s 59.6.7.8 -d 19.2.3.4 -m conntrack --ctstate NEW --tcp-flags ALL SYN -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 19.2.3.4 -d 59.6.7.8 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 59.6.7.8 -d 19.2.3.4 -m conntrack --ctstate ESTABLISHED --ctdir ORIGINAL --ctstatus SEEN_REPLY  --tcp-flags ALL SYN,ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 19.2.3.4 -d 59.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+iptables -A FORWARD -p tcp -s 59.6.7.8 -d 19.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ACK -j ACCEPT
+
+iptables -A FORWARD -p tcp -s 19.2.3.4 -d 59.6.7.8 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT
+iptables -A FORWARD -p tcp -s 59.6.7.8 -d 19.2.3.4 -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ACK,FIN -j ACCEPT

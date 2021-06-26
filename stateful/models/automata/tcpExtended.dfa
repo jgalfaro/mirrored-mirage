@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dfa:Dfa xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:dfa="dfa" name="TCP">
+  <language name="TCP flags">
+    <symbols literal="E1" description="SYN" direction="s"/>
+    <symbols literal="E2" description="SYN" direction="r"/>
+    <symbols literal="E3" description="SYN+ACK" direction="s"/>
+    <symbols literal="E4" description="SYN+ACK" direction="r"/>
+    <symbols literal="E5" description="ACK" direction="s"/>
+    <symbols literal="E6" description="ACK" direction="r"/>
+    <symbols literal="E7" description="FIN" direction="s"/>
+    <symbols literal="E8" description="FIN" direction="r"/>
+    <symbols literal="E9" description="INVALID" direction="s"/>
+    <symbols literal="E10" description="INVALID" direction="r"/>
+  </language>
+  <initialState name="Q0" description="Listen">
+    <transitions targetState="//@regularStates.0" symbols="//@language/@symbols.0"/>
+    <transitions targetState="//@regularStates.1" symbols="//@language/@symbols.1"/>
+  </initialState>
+  <regularStates name="Q1">
+    <transitions targetState="//@regularStates.1" symbols="//@language/@symbols.1"/>
+    <transitions targetState="//@regularStates.2" symbols="//@language/@symbols.3"/>
+  </regularStates>
+  <regularStates name="Q2">
+    <transitions targetState="//@regularStates.3" symbols="//@language/@symbols.2"/>
+  </regularStates>
+  <regularStates name="Q3">
+    <transitions targetState="//@regularStates.4" symbols="//@language/@symbols.4"/>
+  </regularStates>
+  <regularStates name="Q4">
+    <transitions targetState="//@regularStates.4" symbols="//@language/@symbols.5"/>
+  </regularStates>
+  <regularStates name="Q5">
+    <transitions targetState="//@regularStates.5" symbols="//@language/@symbols.4"/>
+    <transitions targetState="//@regularStates.5" symbols="//@language/@symbols.5"/>
+  </regularStates>
+  <regularStates name="Q6">
+    <transitions targetState="//@regularStates.6" symbols="//@language/@symbols.6"/>
+    <transitions targetState="//@regularStates.7" symbols="//@language/@symbols.7"/>
+  </regularStates>
+  <regularStates name="Q7">
+    <transitions targetState="//@regularStates.9" symbols="//@language/@symbols.5"/>
+    <transitions targetState="//@regularStates.8" symbols="//@language/@symbols.7"/>
+  </regularStates>
+  <regularStates name="Q8">
+    <transitions targetState="//@regularStates.10" symbols="//@language/@symbols.4"/>
+  </regularStates>
+  <regularStates name="Q9">
+    <transitions targetState="//@regularStates.11" symbols="//@language/@symbols.4"/>
+  </regularStates>
+  <regularStates name="Q10">
+    <transitions targetState="//@finalStates.0" symbols="//@language/@symbols.7"/>
+  </regularStates>
+  <regularStates name="Q11">
+    <transitions targetState="//@finalStates.0" symbols="//@language/@symbols.6"/>
+  </regularStates>
+  <regularStates name="Q12">
+    <transitions targetState="//@finalStates.0" symbols="//@language/@symbols.5"/>
+  </regularStates>
+  <finalStates name="Q13" description="Closed"/>
+</dfa:Dfa>

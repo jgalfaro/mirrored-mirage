@@ -1,0 +1,37 @@
+-- @path Network=/atlanmod.firewall.stateful.examples/metamodels/network.ecore
+-- @path Iptables=/atlanmod.firewall.stateful.examples/metamodels/Iptables.ecore
+
+module iptables2network;
+create OUT : Network from IN : Iptables;
+
+rule filterSpec2Connection{
+	from 
+		s: Iptables!FilterSpec
+	to 
+		t: Network!Connection (
+			kind <- if s.target = 'ACCEPT' then #allow else #deny endif,
+			service <- s.destinationPort,
+			states <- s.states,
+			setFlags <- s.flags->collect(e|thisModule.iptablesFlag2NetworkFlag(e)),
+			unsetFlags <- s.examFlags ->collect(e|thisModule.iptablesFlag2NetworkFlag(e))
+		)
+}
+
+rule iptablesState2NetworkState{
+	from
+		s: Iptables!State
+	to
+		t: Network!State (
+			name <- s.name
+		)
+}
+
+lazy rule iptablesFlag2NetworkFlag{
+	from
+		s: Iptables!TCPFlag
+	to
+		t: Network!Flag (
+			name <- s.name
+		)
+}
+

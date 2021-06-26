@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:network="http://network">
+  <network:Connection>
+    <states name="LISTEN"/>
+    <setFlags name="SYN"/>
+  </network:Connection>
+  <network:Connection>
+    <states name="REQUEST"/>
+    <setFlags name="SYN"/>
+    <setFlags name="ACK"/>
+    <unsetFlags name="ALL"/>
+  </network:Connection>
+  <network:Connection>
+    <states name="ESTABLISHED"/>
+    <setFlags name="ACK"/>
+    <unsetFlags name="ALL"/>
+  </network:Connection>
+  <network:Connection>
+    <states name="TRANSFER"/>
+    <setFlags name="ACK"/>
+    <unsetFlags name="ALL"/>
+  </network:Connection>
+  <network:Connection>
+    <states name="TRANSFER"/>
+    <setFlags name="FIN"/>
+    <unsetFlags name="ALL"/>
+  </network:Connection>
+  <network:Connection>
+    <states name="FIN_WAIT"/>
+    <setFlags name="ACK"/>
+    <unsetFlags name="ALL"/>
+  </network:Connection>
+  <network:Connection>
+    <states name="CLOSING"/>
+    <setFlags name="FIN"/>
+    <setFlags name="ACK"/>
+    <unsetFlags name="ALL"/>
+  </network:Connection>
+  <network:Connection>
+    <states name="LAST_ACK"/>
+    <setFlags name="RST"/>
+    <unsetFlags name="ALL"/>
+  </network:Connection>
+  <network:Connection kind="deny"/>
+</xmi:XMI>

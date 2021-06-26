@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <project name="Mirage" default="main" basedir=".">
+   <description>
+	Buildfile for Mirage java implementation
+   </description>
+
+   <property environment="env"/>
+   <property name="src" value="${basedir}"/>
+   <property name="build" value="${basedir}"/>
+
+   <target name="init" depends="clean" description="call the clean target" >
+
+   </target>
+   <target name="main" depends="init" description="compile java sources" >
+     <javac  srcdir="${src}" destdir="${build}" debug="on" deprecation="on" optimize="off" includeAntRuntime="false">
+       <classpath>
+         <pathelement path="${basedir}/junit.jar" />
+       </classpath>
+     </javac>
+   </target>
+   <target name="clean" description="clean all the .class files" >
+     <delete>
+       <fileset dir="${build}" includes="**/*.class"/>
+     </delete>
+   </target>
+   </project>

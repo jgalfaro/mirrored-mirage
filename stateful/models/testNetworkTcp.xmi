@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:network="http://network">
+  <network:Connection service="1">
+    <states name="LISTEN"/>
+    <setFlags name="SYN"/>
+  </network:Connection>
+  <network:Connection service="2">
+    <states name="REQUEST"/>
+    <setFlags name="SYN"/>
+    <unsetFlags name="ALL"/>
+  </network:Connection>
+  <network:Connection service="3">
+    <states name="REQUEST"/>
+    <setFlags name="SYN+ACK"/>
+    <unsetFlags name="ALL"/>
+  </network:Connection>
+  <network:Connection service="4">
+    <states name="ESTABLISHED"/>
+    <states name="TRANSFER"/>
+    <states name="CLOSING"/>
+    <states name="CLOSED"/>
+    <setFlags name="ACK"/>
+    <unsetFlags name="ALL"/>
+  </network:Connection>
+  <network:Connection>
+    <states name="TRANSFER"/>
+    <states name="CLOSING"/>
+    <setFlags name="FIN"/>
+    <unsetFlags name="ALL"/>
+  </network:Connection>
+  <network:Connection>
+    <states name="CLOSING"/>
+    <states name="CLOSED"/>
+    <setFlags name="FIN+ACK"/>
+    <unsetFlags name="ALL"/>
+  </network:Connection>
+  <network:Connection>
+    <states name="TRANSFER"/>
+    <states name="CLOSING"/>
+    <states name="CLOSED"/>
+    <setFlags name="RST"/>
+    <unsetFlags name="ALL"/>
+  </network:Connection>
+  <network:Connection kind="deny"/>
+</xmi:XMI>

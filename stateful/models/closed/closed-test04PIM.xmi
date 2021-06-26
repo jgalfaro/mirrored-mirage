@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:network="http://network">
+  <network:Network>
+    <connections desHost="/1" srcHost="/2" protocol="tcp">
+      <states name="Q0"/>
+      <setFlags name="E2"/>
+    </connections>
+    <connections desHost="/2" srcHost="/1" protocol="tcp">
+      <states name="Q0"/>
+      <setFlags name="E1"/>
+    </connections>
+    <connections desHost="/3" srcHost="/4" protocol="tcp">
+      <states name="Q0"/>
+      <setFlags name="E2"/>
+    </connections>
+    <connections desHost="/4" srcHost="/3" protocol="tcp">
+      <states name="Q0"/>
+      <setFlags name="E1"/>
+    </connections>
+    <connections desHost="/5" srcHost="/6" protocol="tcp">
+      <states name="Q0"/>
+      <setFlags name="E2"/>
+    </connections>
+    <connections desHost="/6" srcHost="/5" protocol="tcp">
+      <states name="Q0"/>
+      <setFlags name="E1"/>
+    </connections>
+    <connections desHost="/7" srcHost="/8" protocol="tcp">
+      <states name="Q0"/>
+      <setFlags name="E2"/>
+    </connections>
+    <connections desHost="/8" srcHost="/7" protocol="tcp">
+      <states name="Q0"/>
+      <setFlags name="E1"/>
+    </connections>
+    <connections desHost="/9" srcHost="/10" protocol="tcp">
+      <states name="Q0"/>
+      <setFlags name="E2"/>
+    </connections>
+    <connections desHost="/10" srcHost="/9" protocol="tcp">
+      <states name="Q0"/>
+      <setFlags name="E1"/>
+    </connections>
+    <connections desHost="/1" srcHost="/2" protocol="tcp">
+      <states name="Q1"/>
+      <setFlags name="E4"/>
+    </connections>
+    <connections desHost="/2" srcHost="/1" protocol="tcp">
+      <states name="Q2"/>
+      <setFlags name="E3"/>
+    </connections>
+    <connections desHost="/3" srcHost="/4" protocol="tcp">
+      <states name="Q1"/>
+      <setFlags name="E4"/>
+    </connections>
+    <connections desHost="/4" srcHost="/3" protocol="tcp">
+      <states name="Q2"/>
+      <setFlags name="E3"/>
+    </connections>
+    <connections desHost="/5" srcHost="/6" protocol="tcp">
+      <states name="Q1"/>
+      <setFlags name="E4"/>
+    </connections>
+    <connections desHost="/6" srcHost="/5" protocol="tcp">
+      <states name="Q2"/>
+      <setFlags name="E3"/>
+    </connections>
+    <connections desHost="/7" srcHost="/8" protocol="tcp">
+      <states name="Q1"/>
+      <setFlags name="E4"/>
+    </connections>
+    <connections desHost="/8" srcHost="/7" protocol="tcp">
+      <states name="Q2"/>
+      <setFlags name="E3"/>
+    </connections>
+    <connections desHost="/9" srcHost="/10" protocol="tcp">
+      <states name="Q1"/>
+      <setFlags name="E4"/>
+    </connections>
+    <connections desHost="/10" srcHost="/9" protocol="tcp">
+      <states name="Q2"/>
+      <setFlags name="E3"/>
+    </connections>
+    <connections desHost="/1" srcHost="/2" protocol="tcp">
+      <states name="Q4"/>
+      <setFlags name="E6"/>
+    </connections>
+    <connections desHost="/2" srcHost="/1" protocol="tcp">
+      <states name="Q3"/>
+      <setFlags name="E5"/>
+    </connections>
+    <connections desHost="/1" srcHost="/2" protocol="tcp">
+      <states name="Q5"/>
+      <setFlags name="E5"/>
+    </connections>
+    <connections desHost="/2" srcHost="/1" protocol="tcp">
+      <states name="Q5"/>
+      <setFlags name="E6"/>
+    </connections>
+    <connections desHost="/3" srcHost="/4" protocol="tcp">
+      <states name="Q4"/>
+      <setFlags name="E6"/>
+    </connections>
+    <connections desHost="/4" srcHost="/3" protocol="tcp">
+      <states name="Q3"/>
+      <setFlags name="E5"/>
+    </connections>
+    <connections desHost="/3" srcHost="/4" protocol="tcp">
+      <states name="Q5"/>
+      <setFlags name="E5"/>
+    </connections>
+    <connections desHost="/4" srcHost="/3" protocol="tcp">
+      <states name="Q5"/>
+      <setFlags name="E6"/>
+    </connections>
+    <connections desHost="/5" srcHost="/6" protocol="tcp">
+      <states name="Q4"/>
+      <setFlags name="E6"/>
+    </connections>
+    <connections desHost="/6" srcHost="/5" protocol="tcp">
+      <states name="Q3"/>
+      <setFlags name="E5"/>
+    </connections>
+    <connections desHost="/5" srcHost="/6" protocol="tcp">
+      <states name="Q5"/>
+      <setFlags name="E5"/>
+    </connections>
+    <connections desHost="/6" srcHost="/5" protocol="tcp">
+      <states name="Q5"/>
+      <setFlags name="E6"/>
+    </connections>
+    <connections desHost="/7" srcHost="/8" protocol="tcp">
+      <states name="Q4"/>
+      <setFlags name="E6"/>
+    </connections>
+    <connections desHost="/8" srcHost="/7" protocol="tcp">
+      <states name="Q3"/>
+      <setFlags name="E5"/>
+    </connections>
+    <connections desHost="/7" srcHost="/8" protocol="tcp">
+      <states name="Q5"/>
+      <setFlags name="E5"/>
+    </connections>
+    <connections desHost="/8" srcHost="/7" protocol="tcp">
+      <states name="Q5"/>
+      <setFlags name="E6"/>
+    </connections>
+    <connections desHost="/9" srcHost="/10" protocol="tcp">
+      <states name="Q4"/>
+      <setFlags name="E6"/>
+    </connections>
+    <connections desHost="/10" srcHost="/9" protocol="tcp">
+      <states name="Q3"/>
+      <setFlags name="E5"/>
+    </connections>
+    <connections desHost="/9" srcHost="/10" protocol="tcp">
+      <states name="Q5"/>
+      <setFlags name="E5"/>
+    </connections>
+    <connections desHost="/10" srcHost="/9" protocol="tcp">
+      <states name="Q5"/>
+      <setFlags name="E6"/>
+    </connections>
+  </network:Network>
+  <network:Host ipAddress="5.6.7.8" inConnections="/0/@connections.0 /0/@connections.10 /0/@connections.20 /0/@connections.22" outConnections="/0/@connections.1 /0/@connections.11 /0/@connections.21 /0/@connections.23"/>
+  <network:Host ipAddress="1.2.3.4" inConnections="/0/@connections.1 /0/@connections.11 /0/@connections.21 /0/@connections.23" outConnections="/0/@connections.0 /0/@connections.10 /0/@connections.20 /0/@connections.22"/>
+  <network:Host ipAddress="51.6.7.8" inConnections="/0/@connections.2 /0/@connections.12 /0/@connections.24 /0/@connections.26" outConnections="/0/@connections.3 /0/@connections.13 /0/@connections.25 /0/@connections.27"/>
+  <network:Host ipAddress="11.2.3.4" inConnections="/0/@connections.3 /0/@connections.13 /0/@connections.25 /0/@connections.27" outConnections="/0/@connections.2 /0/@connections.12 /0/@connections.24 /0/@connections.26"/>
+  <network:Host ipAddress="52.6.7.8" inConnections="/0/@connections.4 /0/@connections.14 /0/@connections.28 /0/@connections.30" outConnections="/0/@connections.5 /0/@connections.15 /0/@connections.29 /0/@connections.31"/>
+  <network:Host ipAddress="12.2.3.4" inConnections="/0/@connections.5 /0/@connections.15 /0/@connections.29 /0/@connections.31" outConnections="/0/@connections.4 /0/@connections.14 /0/@connections.28 /0/@connections.30"/>
+  <network:Host ipAddress="53.6.7.8" inConnections="/0/@connections.6 /0/@connections.16 /0/@connections.32 /0/@connections.34" outConnections="/0/@connections.7 /0/@connections.17 /0/@connections.33 /0/@connections.35"/>
+  <network:Host ipAddress="13.2.3.4" inConnections="/0/@connections.7 /0/@connections.17 /0/@connections.33 /0/@connections.35" outConnections="/0/@connections.6 /0/@connections.16 /0/@connections.32 /0/@connections.34"/>
+  <network:Host ipAddress="54.6.7.8" inConnections="/0/@connections.8 /0/@connections.18 /0/@connections.36 /0/@connections.38" outConnections="/0/@connections.9 /0/@connections.19 /0/@connections.37 /0/@connections.39"/>
+  <network:Host ipAddress="14.2.3.4" inConnections="/0/@connections.9 /0/@connections.19 /0/@connections.37 /0/@connections.39" outConnections="/0/@connections.8 /0/@connections.18 /0/@connections.36 /0/@connections.38"/>
+</xmi:XMI>

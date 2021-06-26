@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="ASCII"?>
+<iptables:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:iptables="http://www.xtext.org/example/iptables/Iptables">
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-P" target="ACCEPT">
+        <chain chainName="FORWARD"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="1.2.3.4" ipDst="5.6.7.8" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="NEW"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="5.6.7.8" ipDst="1.2.3.4" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="NEW"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="1.2.3.4" ipDst="5.6.7.8" status="SEEN_REPLY" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="5.6.7.8" ipDst="1.2.3.4" status="SEEN_REPLY" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="1.2.3.4" ipDst="5.6.7.8" status="ASSURED" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="1.2.3.4" ipDst="5.6.7.8" status="ASSURED" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="5.6.7.8" ipDst="1.2.3.4" status="ASSURED" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="5.6.7.8" ipDst="1.2.3.4" status="ASSURED" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="11.2.3.4" ipDst="51.6.7.8" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="NEW"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="51.6.7.8" ipDst="11.2.3.4" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="NEW"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="11.2.3.4" ipDst="51.6.7.8" status="SEEN_REPLY" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="51.6.7.8" ipDst="11.2.3.4" status="SEEN_REPLY" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="11.2.3.4" ipDst="51.6.7.8" status="ASSURED" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="11.2.3.4" ipDst="51.6.7.8" status="ASSURED" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="51.6.7.8" ipDst="11.2.3.4" status="ASSURED" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="51.6.7.8" ipDst="11.2.3.4" status="ASSURED" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="12.2.3.4" ipDst="51.6.7.8" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="NEW"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="52.6.7.8" ipDst="11.2.3.4" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="NEW"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="12.2.3.4" ipDst="52.6.7.8" status="SEEN_REPLY" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="52.6.7.8" ipDst="12.2.3.4" status="SEEN_REPLY" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="12.2.3.4" ipDst="52.6.7.8" status="ASSURED" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="12.2.3.4" ipDst="52.6.7.8" status="ASSURED" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="52.6.7.8" ipDst="12.2.3.4" status="ASSURED" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="52.6.7.8" ipDst="12.2.3.4" status="ASSURED" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="13.2.3.4" ipDst="53.6.7.8" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="NEW"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="53.6.7.8" ipDst="13.2.3.4" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="NEW"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="13.2.3.4" ipDst="53.6.7.8" status="SEEN_REPLY" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="53.6.7.8" ipDst="13.2.3.4" status="SEEN_REPLY" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="13.2.3.4" ipDst="53.6.7.8" status="ASSURED" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="13.2.3.4" ipDst="53.6.7.8" status="ASSURED" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="53.6.7.8" ipDst="13.2.3.4" status="ASSURED" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" ip="53.6.7.8" ipDst="13.2.3.4" status="ASSURED" target="DROP">
+        <chain chainName="FORWARD"/>
+        <matches name="conntrack"/>
+        <states name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+</iptables:Model>

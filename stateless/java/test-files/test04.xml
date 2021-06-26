@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<network_topology>
+  <network_components>
+    <network_component componentID="1" name="network_cloud" type="network_cloud" x="459" y="100">
+      <icon_image source="icons/network_cloud.png" width="64" height="64"/>
+      <properties>
+        <property name="ipaddress" is_selected="true">192.168.120.1</property>
+      </properties>
+      <ports>
+        <port portID="0" x="491" y="95"/>
+        <port portID="1" x="528" y="132"/>
+        <port portID="2" x="491" y="169"/>
+        <port portID="3" x="454" y="132"/>
+      </ports>
+    </network_component>
+    <network_component componentID="2" name="network_firewall" type="network_firewall" x="213" y="92">
+      <icon_image source="icons/network_firewall.png" width="64" height="64"/>
+      <properties/>
+      <ports>
+        <port portID="4" x="245" y="87"/>
+        <port portID="5" x="282" y="124"/>
+        <port portID="6" x="245" y="161"/>
+        <port portID="7" x="208" y="124"/>
+      </ports>
+    </network_component>
+  </network_components>
+  <connexions>
+    <connexion portID1="5" portID2="3"/>
+  </connexions>
+</network_topology>

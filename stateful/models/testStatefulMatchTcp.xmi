@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<iptables:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:iptables="http://www.xtext.org/example/iptables/Iptables">
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" syn="true" target="ACCEPT">
+        <chain chainName="FORWARD"/>
+        <states xsi:type="iptables:StateFulMatchStates" name="NONE"/>
+        <flags name="SYN"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" target="ACCEPT">
+        <chain chainName="FORWARD"/>
+        <states xsi:type="iptables:StateFulMatchStates" name="SYN_SENT"/>
+        <examFlags name="ALL"/>
+        <flags name="SYN"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" target="ACCEPT">
+        <chain chainName="FORWARD"/>
+        <states xsi:type="iptables:StateFulMatchStates" name="SYN_RECV"/>
+        <examFlags name="ALL"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" target="ACCEPT">
+        <chain chainName="FORWARD"/>
+        <states xsi:type="iptables:StateFulMatchStates" name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" target="ACCEPT">
+        <chain chainName="FORWARD"/>
+        <states xsi:type="iptables:StateFulMatchStates" name="ESTABLISHED"/>
+        <examFlags name="ALL"/>
+        <flags name="FIN"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" target="ACCEPT">
+        <chain chainName="FORWARD"/>
+        <states xsi:type="iptables:StateFulMatchStates" name="FIN_WAIT"/>
+        <examFlags name="ALL"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" target="ACCEPT">
+        <chain chainName="FORWARD"/>
+        <states xsi:type="iptables:StateFulMatchStates" name="CLOSE_WAIT"/>
+        <examFlags name="ALL"/>
+        <flags name="FIN"/>
+        <flags name="ACK"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" target="ACCEPT">
+        <chain chainName="FORWARD"/>
+        <states xsi:type="iptables:StateFulMatchStates" name="LAST_ACK"/>
+        <examFlags name="ALL"/>
+        <flags name="RST"/>
+      </filter>
+    </filter>
+  </rules>
+  <rules>
+    <filter>
+      <filter xsi:type="iptables:FilterSpec" option="-A" protocol="tcp" target="DROP">
+        <chain chainName="FORWARD"/>
+      </filter>
+    </filter>
+  </rules>
+</iptables:Model>

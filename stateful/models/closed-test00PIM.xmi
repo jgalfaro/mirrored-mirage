@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:network="http://network">
+  <network:Network>
+    <connections desHost="/1" srcHost="/2" protocol="tcp">
+      <states name="Q0"/>
+      <setFlags name="E2"/>
+    </connections>
+    <connections desHost="/2" srcHost="/1" protocol="tcp">
+      <states name="Q0"/>
+      <setFlags name="E1"/>
+    </connections>
+    <connections desHost="/1" srcHost="/2" protocol="tcp">
+      <states name="Q1"/>
+      <setFlags name="E4"/>
+    </connections>
+    <connections desHost="/2" srcHost="/1" protocol="tcp">
+      <states name="Q2"/>
+      <setFlags name="E3"/>
+    </connections>
+    <connections desHost="/1" srcHost="/2" protocol="tcp">
+      <states name="Q4"/>
+      <setFlags name="E6"/>
+    </connections>
+    <connections desHost="/2" srcHost="/1" protocol="tcp">
+      <states name="Q3"/>
+      <setFlags name="E5"/>
+    </connections>
+    <connections desHost="/1" srcHost="/2" protocol="tcp">
+      <states name="Q5"/>
+      <setFlags name="E5"/>
+    </connections>
+    <connections desHost="/2" srcHost="/1" protocol="tcp">
+      <states name="Q5"/>
+      <setFlags name="E6"/>
+    </connections>
+    <connections desHost="/1" srcHost="/2" protocol="tcp">
+      <states name="Q6"/>
+      <setFlags name="E8"/>
+    </connections>
+    <connections desHost="/2" srcHost="/1" protocol="tcp">
+      <states name="Q6"/>
+      <setFlags name="E7"/>
+    </connections>
+    <connections desHost="/1" srcHost="/2" protocol="tcp">
+      <states name="Q7"/>
+      <setFlags name="E8"/>
+    </connections>
+    <connections desHost="/1" srcHost="/2" protocol="tcp">
+      <states name="Q10"/>
+      <setFlags name="E8"/>
+    </connections>
+    <connections desHost="/2" srcHost="/1" protocol="tcp">
+      <states name="Q11"/>
+      <setFlags name="E7"/>
+    </connections>
+  </network:Network>
+  <network:Host ipAddress="5.6.7.8" inConnections="/0/@connections.0 /0/@connections.2 /0/@connections.4 /0/@connections.6 /0/@connections.8 /0/@connections.10 /0/@connections.11" outConnections="/0/@connections.1 /0/@connections.3 /0/@connections.5 /0/@connections.7 /0/@connections.9 /0/@connections.12"/>
+  <network:Host ipAddress="1.2.3.4" inConnections="/0/@connections.1 /0/@connections.3 /0/@connections.5 /0/@connections.7 /0/@connections.9 /0/@connections.12" outConnections="/0/@connections.0 /0/@connections.2 /0/@connections.4 /0/@connections.6 /0/@connections.8 /0/@connections.10 /0/@connections.11"/>
+</xmi:XMI>

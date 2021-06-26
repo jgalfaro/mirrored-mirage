@@ -1,0 +1,197 @@
+-- @path Network=/atlanmod.firewall.stateful.examples/metamodels/network.ecore
+
+module IptablesStates2TcpStates;
+create OUT : Network refining IN : Network;
+
+
+rule IptablesNew2TcpListen{
+	from 
+		s: Network!State (s.name = 'NEW')
+	to
+		t: Network!State (
+			name <- 'LISTEN'
+		)
+}
+
+rule IptablesEstablished2TcpRequest{
+	from 
+		s: Network!State (s.name = 'ESTABLISHED' and 
+			s.refImmediateComposite().setFlags->size() = 1 and 
+			s.refImmediateComposite().setFlags->exists(e | e.name = 'SYN'))
+	to
+		t: Network!State (
+			name <- 'REQUEST'
+		)
+}
+
+-----------------------------------------------------------------------------------------
+-- A connection with state ESTABLISHED and flag SYN+ACK corresponds in TCP to the following
+-- states:
+-- REQUEST
+-----------------------------------------------------------------------------------------
+rule IptablesEstablishedRule2TcpStateWithSynAck{
+	from 
+		s: Network!Connection (s.states->exists(e | e.name = 'ESTABLISHED') and
+				s.setFlags->size() = 2 and
+				s.setFlags->exists(e | e.name = 'ACK') and
+				s.setFlags->exists(e | e.name = 'SYN'))	
+	to
+		t: Network!Connection (
+			states <:= Sequence{state1},
+			setFlags <:= Sequence{flag}
+		),
+		
+		state1: Network!State (
+			name <- 'REQUEST'
+		),
+		
+		flag: Network!Flag (
+			name <- 'SYN+ACK'
+		)
+}
+
+
+-----------------------------------------------------------------------------------------
+-- A connection with state ESTABLISHED and flag RST corresponds in TCP to the following
+-- states:
+--	TRANSFER
+--  CLOSING
+--  CLOSED
+-----------------------------------------------------------------------------------------
+rule IptablesEstablishedRule2TcpStateWithFinAck{
+	from 
+		s: Network!Connection (s.states->exists(e | e.name = 'ESTABLISHED') and
+				s.setFlags->size() = 2 and
+				s.setFlags->exists(e | e.name = 'ACK') and
+				s.setFlags->exists(e | e.name = 'FIN'))	
+	to
+		t: Network!Connection (
+			states <:= Sequence{state1, state2},
+			setFlags <:= Sequence{t2}
+		),
+		
+	
+		state1: Network!State (
+			name <- 'CLOSING'
+		),
+		
+		state2: Network!State (
+			name <- 'CLOSED'
+		),
+		
+		t2: Network!Flag (
+			name <- 'FIN+ACK'
+		)
+}
+
+-----------------------------------------------------------------------------------------
+-- A connection with state ESTABLISHED and flag RST corresponds in TCP to the following
+-- states:
+--	TRANSFER
+--  CLOSING
+--  CLOSED
+-----------------------------------------------------------------------------------------
+rule IptablesEstablishedRule2TcpStateWithRst{
+	from 
+		s: Network!Connection (s.states->exists(e | e.name = 'ESTABLISHED') and
+				s.setFlags->size() = 1 and
+				s.setFlags->exists(e | e.name = 'RST'))	
+	to
+		t: Network!Connection (
+			states <:= Sequence{state1, state2, state3} 	
+		),
+	
+		state1: Network!State (
+			name <- 'TRANSFER'
+		),
+		
+		state2: Network!State (
+			name <- 'CLOSING'
+		),
+		
+		state3: Network!State (
+			name <- 'CLOSED'
+		)
+}
+
+-----------------------------------------------------------------------------------------
+-- A connection with state ESTABLISHED and flag ACK corresponds in TCP to the following
+-- states:
+--	ESTABLISHED
+--	TRANSFER
+--  CLOSING
+--  CLOSED
+-----------------------------------------------------------------------------------------
+rule IptablesEstablishedRule2TcpStateWithAck{
+	from 
+		s: Network!Connection (s.states->exists(e | e.name = 'ESTABLISHED') and
+				s.setFlags->size() = 1 and
+				s.setFlags->exists(e | e.name = 'ACK'))	
+	to
+		t: Network!Connection (
+			states <:= Sequence{state1, state2, state3, state4} 	
+		),
+	
+		state1: Network!State (
+			name <- 'ESTABLISHED'
+		),
+		
+		state2: Network!State (
+			name <- 'TRANSFER'
+		),
+		
+		state3: Network!State (
+			name <- 'CLOSING'
+		),
+		
+		state4: Network!State (
+			name <- 'CLOSED'
+		)
+}
+
+-----------------------------------------------------------------------------------------
+-- A connection with state ESTABLISHED and flag FIN corresponds in TCP to the following
+-- states:
+--	TRANSFER
+--  CLOSING
+-----------------------------------------------------------------------------------------
+rule IptablesEstablishedRule2TcpStateWithFin{
+	from 
+		s: Network!Connection (s.states->exists(e | e.name = 'ESTABLISHED') and
+				s.setFlags->size() = 1 and
+				s.setFlags->exists(e | e.name = 'FIN'))	
+	to
+		t: Network!Connection (
+			states <:= Sequence{state1, state2} 	
+		),
+	
+		state1: Network!State (
+			name <- 'TRANSFER'
+		),
+		
+		state2: Network!State (
+			name <- 'CLOSING'
+		)
+}
+
+
+--rule IptablesFlags2AutomatonFlags{
+--	from
+--		s:Network!Connection (s.setFlags->size() > 1)
+--	to
+--		t:Network!Connection (
+--			setFlags <:= Sequence{t2}
+--		),
+--		
+--		--We transform a sequence of flags like SYN, ACK in an string SYN+ACK
+--		t2: Network!Flag (
+--		name <- s.setFlags->collect(e | e.name)->iterate(flagName; totalName : String = '' |
+--			if (totalName.size() > 0) then
+--				totalName.concat('+').concat(flagName)
+--			else
+--				totalName.concat(flagName)
+--			endif
+--			)
+--		)
+--}
+

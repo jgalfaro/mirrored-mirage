@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<network:Network xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:network="http://network">
+  <hosts ipAddress="1.2.3.4"/>
+  <hosts ipAddress="15.2.3.4"/>
+  <hosts ipAddress="20.2.3.4"/>
+  <hosts ipAddress="21.2.3.4"/>
+  <hosts ipAddress="10.2.3.4"/>
+  <hosts ipAddress="54.6.7.8"/>
+  <hosts ipAddress="50.6.7.8"/>
+  <hosts ipAddress="52.6.7.8"/>
+  <hosts ipAddress="53.6.7.8"/>
+  <hosts ipAddress="19.2.3.4"/>
+  <hosts ipAddress="57.6.7.8"/>
+  <hosts ipAddress="14.2.3.4"/>
+  <hosts ipAddress="59.6.7.8"/>
+  <hosts ipAddress="5.6.7.8"/>
+  <hosts ipAddress="12.2.3.4"/>
+  <hosts ipAddress="17.2.3.4"/>
+  <hosts ipAddress="13.2.3.4"/>
+  <hosts ipAddress="55.6.7.8"/>
+  <hosts ipAddress="60.6.7.8"/>
+  <hosts ipAddress="18.2.3.4"/>
+  <hosts ipAddress="51.6.7.8"/>
+  <hosts ipAddress="61.6.7.8"/>
+  <hosts ipAddress="56.6.7.8"/>
+  <hosts ipAddress="58.6.7.8"/>
+  <hosts ipAddress="16.2.3.4"/>
+  <hosts ipAddress="11.2.3.4"/>
+</network:Network>

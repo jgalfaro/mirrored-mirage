@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<network_topology>
+  <network_components>
+    <network_component componentID="1" name="bnorth" type="network_cloud" x="325" y="17">
+      <icon_image source="icons/network_cloud.png" width="64" height="64"/>
+      <properties>
+        <property name="included_address" is_selected="true">FF:FF:FF:FF:FF:FF/0</property>
+      </properties>
+      <ports>
+        <port portID="0" x="357" y="12"/>
+        <port portID="1" x="394" y="49"/>
+        <port portID="2" x="357" y="86"/>
+        <port portID="3" x="320" y="49"/>
+      </ports>
+    </network_component>
+    <network_component componentID="2" name="C1" type="network_firewall" x="129" y="23">
+      <icon_image source="icons/network_firewall.png" width="64" height="64"/>
+      <properties/>
+      <ports>
+        <port portID="4" x="161" y="18"/>
+        <port portID="5" x="198" y="55"/>
+        <port portID="6" x="161" y="92"/>
+        <port portID="7" x="124" y="55"/>
+      </ports>
+    </network_component>
+    <network_component componentID="3" name="P1" type="network_cloud" x="461" y="140">
+      <icon_image source="icons/network_cloud.png" width="64" height="64"/>
+      <properties>
+        <property name="included_address" is_selected="true">10.0.26.0/24,10.0.28.0/24</property>
+      </properties>
+      <ports>
+        <port portID="8" x="493" y="135"/>
+        <port portID="9" x="530" y="172"/>
+        <port portID="10" x="493" y="209"/>
+        <port portID="11" x="456" y="172"/>
+      </ports>
+    </network_component>
+    <network_component componentID="4" name="beast2" type="network_cloud" x="747" y="170">
+      <icon_image source="icons/network_cloud.png" width="64" height="64"/>
+      <properties>
+        <property name="included_address" is_selected="true">FF:FF:FF:FF:FF:FF/0</property>
+      </properties>
+      <ports>
+        <port portID="12" x="779" y="165"/>
+        <port portID="13" x="816" y="202"/>
+        <port portID="14" x="779" y="239"/>
+        <port portID="15" x="742" y="202"/>
+      </ports>
+    </network_component>
+    <network_component componentID="5" name="P4" type="network_cloud" x="239" y="275">
+      <icon_image source="icons/network_cloud.png" width="64" height="64"/>
+      <properties>
+        <property name="included_address" is_selected="true">10.0.31.0/24,10.0.32.0/24,10.0.33.0/24</property>
+      </properties>
+      <ports>
+        <port portID="16" x="271" y="270"/>
+        <port portID="17" x="308" y="307"/>
+        <port portID="18" x="271" y="344"/>
+        <port portID="19" x="234" y="307">
+          <description x="153" y="306"/>
+        </port>
+      </ports>
+    </network_component>
+    <network_component componentID="6" name="E2" type="network_cloud" x="961" y="19">
+      <icon_image source="icons/network_cloud.png" width="64" height="64"/>
+      <properties>
+        <property name="included_address" is_selected="true">192.170.21.0/24,192.170.22.0/24,192.170.23.0/24</property>
+      </properties>
+      <ports>
+        <port portID="20" x="993" y="14"/>
+        <port portID="21" x="1030" y="51"/>
+        <port portID="22" x="993" y="88"/>
+        <port portID="23" x="956" y="51"/>
+      </ports>
+    </network_component>
+    <network_component componentID="7" name="P2" type="network_cloud" x="664" y="234">
+      <icon_image source="icons/network_cloud.png" width="64" height="64"/>
+      <properties>
+        <property name="included_address" is_selected="true">10.0.24.0/24,10.0.25.0/24,10.0.27.0/24</property>
+      </properties>
+      <ports>
+        <port portID="24" x="696" y="229"/>
+        <port portID="25" x="733" y="266"/>
+        <port portID="26" x="696" y="303"/>
+        <port portID="27" x="659" y="266"/>
+      </ports>
+    </network_component>
+    <network_component componentID="8" name="E1" type="network_cloud" x="10" y="32">
+      <icon_image source="icons/network_cloud.png" width="64" height="64"/>
+      <properties>
+        <property name="included_address" is_selected="true">200.160.1.0/24,200.160.2.0/24</property>
+      </properties>
+      <ports>
+        <port portID="28" x="42" y="27"/>
+        <port portID="29" x="79" y="64"/>
+        <port portID="30" x="42" y="101"/>
+        <port portID="31" x="5" y="64"/>
+      </ports>
+    </network_component>
+    <network_component componentID="9" name="bwest" type="network_cloud" x="124" y="232">
+      <icon_image source="icons/network_cloud.png" width="64" height="64"/>
+      <properties>
+        <property name="included_address" is_selected="true">FF:FF:FF:FF:FF:FF/0</property>
+      </properties>
+      <ports>
+        <port portID="32" x="156" y="227"/>
+        <port portID="33" x="193" y="264"/>
+        <port portID="34" x="156" y="301"/>
+        <port portID="35" x="119" y="264"/>
+      </ports>
+    </network_component>
+    <network_component componentID="10" name="beast1" type="network_cloud" x="582" y="62">
+      <icon_image source="icons/network_cloud.png" width="64" height="64"/>
+      <properties>
+        <property name="included_address" is_selected="true">FF:FF:FF:FF:FF:FF/0</property>
+      </properties>
+      <ports>
+        <port portID="36" x="614" y="57"/>
+        <port portID="37" x="651" y="94"/>
+        <port portID="38" x="614" y="131"/>
+        <port portID="39" x="577" y="94"/>
+      </ports>
+    </network_component>
+    <network_component componentID="11" name="C3" type="network_ids" x="323" y="145">
+      <icon_image source="icons/network_ids.png" width="64" height="64"/>
+      <properties/>
+      <ports>
+        <port portID="40" x="355" y="140"/>
+        <port portID="41" x="392" y="177"/>
+        <port portID="42" x="355" y="214"/>
+        <port portID="43" x="318" y="177"/>
+      </ports>
+    </network_component>
+    <network_component componentID="12" name="C4" type="network_ids" x="511" y="242">
+      <icon_image source="icons/network_ids.png" width="64" height="64"/>
+      <properties/>
+      <ports>
+        <port portID="44" x="543" y="237"/>
+        <port portID="45" x="580" y="274"/>
+        <port portID="46" x="543" y="311"/>
+        <port portID="47" x="506" y="274"/>
+      </ports>
+    </network_component>
+    <network_component componentID="13" name="C2" type="network_firewall" x="160" y="409">
+      <icon_image source="icons/network_firewall.png" width="64" height="64"/>
+      <properties/>
+      <ports>
+        <port portID="48" x="192" y="404">
+          <description x="192" y="404"/>
+        </port>
+        <port portID="49" x="229" y="441"/>
+        <port portID="50" x="192" y="478"/>
+        <port portID="51" x="155" y="441"/>
+      </ports>
+    </network_component>
+    <network_component componentID="14" name="C6" type="network_firewall" x="842" y="22">
+      <icon_image source="icons/network_firewall.png" width="64" height="64"/>
+      <properties/>
+      <ports>
+        <port portID="52" x="874" y="17"/>
+        <port portID="53" x="911" y="54"/>
+        <port portID="54" x="874" y="91"/>
+        <port portID="55" x="837" y="54"/>
+      </ports>
+    </network_component>
+    <network_component componentID="15" name="bsouth2" type="network_cloud" x="845" y="393">
+      <icon_image source="icons/network_cloud.png" width="64" height="64"/>
+      <properties>
+        <property name="included_address" is_selected="true">FF:FF:FF:FF:FF:FF/0</property>
+      </properties>
+      <ports>
+        <port portID="56" x="877" y="388"/>
+        <port portID="57" x="914" y="425"/>
+        <port portID="58" x="877" y="462"/>
+        <port portID="59" x="840" y="425"/>
+      </ports>
+    </network_component>
+    <network_component componentID="16" name="C5" type="network_firewall" x="725" y="336">
+      <icon_image source="icons/network_firewall.png" width="64" height="64"/>
+      <properties/>
+      <ports>
+        <port portID="60" x="757" y="331"/>
+        <port portID="61" x="794" y="368"/>
+        <port portID="62" x="757" y="405"/>
+        <port portID="63" x="720" y="368"/>
+      </ports>
+    </network_component>
+    <network_component componentID="17" name="P3" type="network_cloud" x="582" y="330">
+      <icon_image source="icons/network_cloud.png" width="64" height="64"/>
+      <properties>
+        <property name="included_address" is_selected="true">10.0.34.0/24,10.0.35.0/24,10.0.36.0/24</property>
+      </properties>
+      <ports>
+        <port portID="64" x="614" y="325"/>
+        <port portID="65" x="651" y="362"/>
+        <port portID="66" x="614" y="399"/>
+        <port portID="67" x="577" y="362"/>
+      </ports>
+    </network_component>
+    <network_component componentID="18" name="bsouth1" type="network_cloud" x="470" y="385">
+      <icon_image source="icons/network_cloud.png" width="64" height="64"/>
+      <properties>
+        <property name="included_address" is_selected="true">FF:FF:FF:FF:FF:FF/0</property>
+      </properties>
+      <ports>
+        <port portID="68" x="502" y="380"/>
+        <port portID="69" x="539" y="417"/>
+        <port portID="70" x="502" y="454"/>
+        <port portID="71" x="465" y="417"/>
+      </ports>
+    </network_component>
+    <network_component componentID="19" name="P5" type="network_cloud" x="325" y="313">
+      <icon_image source="icons/network_cloud.png" width="64" height="64"/>
+      <properties>
+        <property name="included_address" is_selected="true">10.0.16.0/24</property>
+      </properties>
+      <ports>
+        <port portID="72" x="357" y="308"/>
+        <port portID="73" x="394" y="345"/>
+        <port portID="74" x="357" y="382"/>
+        <port portID="75" x="320" y="345"/>
+      </ports>
+    </network_component>
+  </network_components>
+  <connexions>
+    <connexion portID1="5" portID2="3"/>
+    <connexion portID1="32" portID2="6"/>
+    <connexion portID1="40" portID2="2"/>
+    <connexion portID1="11" portID2="41"/>
+    <connexion portID1="33" portID2="47"/>
+    <connexion portID1="34" portID2="51"/>
+    <connexion portID1="18" portID2="48"/>
+    <connexion portID1="55" portID2="1"/>
+    <connexion portID1="23" portID2="53"/>
+    <connexion portID1="54" portID2="12"/>
+    <connexion portID1="60" portID2="14"/>
+    <connexion portID1="65" portID2="63"/>
+    <connexion portID1="58" portID2="50"/>
+    <connexion portID1="49" portID2="71"/>
+    <connexion portID1="69" portID2="62"/>
+    <connexion portID1="29" portID2="7"/>
+    <connexion portID1="54" portID2="56"/>
+    <connexion portID1="54" portID2="37"/>
+    <connexion portID1="45" portID2="38"/>
+    <connexion portID1="74" portID2="48"/>
+    <connexion portID1="45" portID2="27"/>
+  </connexions>
+</network_topology>

@@ -1,0 +1,101 @@
+iptables -P FORWARD ACCEPT
+
+
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate NEW --tcp-flags ALL SYN,ACK -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate NEW --tcp-flags ALL ACK -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate NEW --tcp-flags ALL ACK,PSH -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate NEW --tcp-flags ALL ACK,FIN -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate NEW --tcp-flags ALL FIN -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate NEW --tcp-flags ALL RST -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate NEW --tcp-flags ACK,FIN FIN -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate NEW --tcp-flags ACK,PSH PSH -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate NEW --tcp-flags ACK,URG URG -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate NEW --tcp-flags FIN,RST FIN,RST -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate NEW --tcp-flags SYN,FIN SYN,FIN -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate NEW --tcp-flags SYN,RST SYN,RST -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate NEW --tcp-flags ALL ALL -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate NEW --tcp-flags ALL NONE -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate NEW --tcp-flags ALL FIN,PSH,URG -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate NEW --tcp-flags ALL SYN,FIN,PSH,URG -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate NEW --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP
+
+
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate NEW --tcp-flags ALL SYN,ACK -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate NEW --tcp-flags ALL ACK -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate NEW --tcp-flags ALL ACK,PSH -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate NEW --tcp-flags ALL ACK,FIN -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate NEW --tcp-flags ALL FIN -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate NEW --tcp-flags ALL RST -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate NEW --tcp-flags ACK,FIN FIN -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate NEW --tcp-flags ACK,PSH PSH -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate NEW --tcp-flags ACK,URG URG -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate NEW --tcp-flags FIN,RST FIN,RST -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate NEW --tcp-flags SYN,FIN SYN,FIN -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate NEW --tcp-flags SYN,RST SYN,RST -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate NEW --tcp-flags ALL ALL -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate NEW --tcp-flags ALL NONE -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate NEW --tcp-flags ALL FIN,PSH,URG -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate NEW --tcp-flags ALL SYN,FIN,PSH,URG -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate NEW --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP
+
+
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL SYN -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL RST -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ACK,FIN FIN -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ACK,PSH PSH -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ACK,URG URG -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags FIN,RST FIN,RST -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags SYN,FIN SYN,FIN -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags SYN,RST SYN,RST -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ALL -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL NONE -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL FIN,PSH,URG -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL SYN,FIN,PSH,URG -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP
+
+
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL SYN -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL RST -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ACK,FIN FIN -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ACK,PSH PSH -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ACK,URG URG -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags FIN,RST FIN,RST -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags SYN,FIN SYN,FIN -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags SYN,RST SYN,RST -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL ALL -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL NONE -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL FIN,PSH,URG -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL SYN,FIN,PSH,URG -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus SEEN_REPLY --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP
+
+
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL SYN -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL SYN,ACK -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL RST -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ACK,FIN FIN -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ACK,PSH PSH -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ACK,URG URG -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags FIN,RST FIN,RST -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags SYN,FIN SYN,FIN -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags SYN,RST SYN,RST -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ALL -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL NONE -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL FIN,PSH,URG -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL SYN,FIN,PSH,URG -j DROP
+iptables -A FORWARD -p tcp -s 1.2.3.4 -d 5.6.7.8  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP
+
+
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL SYN -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL SYN,ACK -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL RST -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ACK,FIN FIN -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ACK,PSH PSH -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ACK,URG URG -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags FIN,RST FIN,RST -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags SYN,FIN SYN,FIN -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags SYN,RST SYN,RST -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL ALL -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL NONE -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL FIN,PSH,URG -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL SYN,FIN,PSH,URG -j DROP
+iptables -A FORWARD -p tcp -s 5.6.7.8 -d 1.2.3.4  -m conntrack --ctstate ESTABLISHED --ctstatus ASSURED --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP

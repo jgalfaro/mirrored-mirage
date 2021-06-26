@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<network:Network xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:network="http://network">
+  <hosts ipAddress="1.2.3.4" inConnections="//@connections.1 //@connections.2" outConnections="//@connections.0 //@connections.3"/>
+  <hosts ipAddress="5.6.7.8" inConnections="//@connections.0 //@connections.3" outConnections="//@connections.1 //@connections.2"/>
+  <connections desHost="//@hosts.1" srcPort="1080" srcHost="//@hosts.0" protocol="tcp" dstPort="80">
+    <states name="Q0"/>
+    <setFlags name="E2"/>
+  </connections>
+  <connections desHost="//@hosts.0" srcPort="80" srcHost="//@hosts.1" protocol="tcp" dstPort="1080">
+    <states name="Q2"/>
+    <setFlags name="E3"/>
+  </connections>
+  <connections desHost="//@hosts.0" srcPort="80" srcHost="//@hosts.1" protocol="tcp" dstPort="1080">
+    <states name="Q5"/>
+    <setFlags name="E7"/>
+  </connections>
+  <connections desHost="//@hosts.1" srcPort="1080" srcHost="//@hosts.0" protocol="tcp" dstPort="80">
+    <states name="Q9"/>
+    <setFlags name="E8"/>
+  </connections>
+</network:Network>

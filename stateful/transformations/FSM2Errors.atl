@@ -1,0 +1,250 @@
+-- @path ERRORS=/atlanmod.%20firewall.stateful.examples/metamodels/ConnectionErrors.ecore
+-- @path DFA=/atlanmod.%20firewall.stateful.examples/metamodels/DFA.ecore
+
+module FSM2Errors;
+create OUT : ERRORS from IN : DFA, IN2: Network;
+
+-----------------------------------------------------------------------------------------
+-- Calculates all the paths from q0 to qf in a DFA
+--
+-- Parameters:
+-- 	input: Initial dfa element
+-- 	partial: path followed
+-- 	visited: elements already explored
+-----------------------------------------------------------------------------------------
+helper def : findPaths(input : DFA!State, partial : Sequence(DFA!State), visited : Sequence(DFA!State)) : Set(Sequence(DFA!State)) =
+    if (input.oclIsTypeOf(DFA!FinalState)) then
+      Set{Sequence{input}}
+    else
+      if (visited->excludes(input)) then
+        let transitions : Set(DFA!Transition) = input.transitions in
+        transitions->iterate(i; resStates : Set(Sequence(DFA!State)) = Set{} |
+            let returned : Set(Sequence(DFA!State)) =
+                self.findPaths(i.targetState, partial, visited->append(input)) in
+              resStates->union(
+                returned->iterate(ret; res : Set(Sequence(DFA!State)) = Set{} |
+					res->including(partial->append(input)->union(ret))
+                )
+              )
+        )
+      else
+        Set{}
+      endif
+    endif
+;
+ 
+-----------------------------------------------------------------------------------------      
+-- stores all the paths from q0 to qf in a DFA model
+-----------------------------------------------------------------------------------------
+helper def : PATHS : Set(Sequence(DFA!State)) =
+	thisModule.findPaths(DFA!InitialState.allInstances().first().debug('init'), Sequence{}, Sequence{}).debug('c:')
+;
+
+-----------------------------------------------------------------------------------------      
+-- stores all the state rules
+-----------------------------------------------------------------------------------------
+helper def : RULES : Sequence(Network!Connection) =
+	Network!Connection.allInstances()
+;
+
+-----------------------------------------------------------------------------------------      
+-- Calculates L contained in S (PATHS) so that each l in L is a path form q0 to qf containing
+-- the given states Sequence(DFA!State)
+--
+-- Parameters:
+--	S: set of all path from q0 to qf
+--	rStates: states from the rule
+-----------------------------------------------------------------------------------------
+helper def : correlate(S: Set(Sequence(DFA!State)), rState: String, rEvent : String) : Set(Sequence(DFA!State)) =	
+	--we have to look for a transition so that NextState = State.transition.targetState
+	S->iterate(path; res : Set(Sequence(DFA!State)) = Set{} |
+		let s : DFA!State = path->select(e | e.name.toLower() = rState.name.toLower())->first() in
+		if not (s.oclIsUndefined()) then
+			let tr : DFA!Transition = s.transitions->select(e | e.symbols.literal = rEvent.name)->first() in
+				if (path.at(path.indexOf(s) + 1) = tr.targetState) then
+					res->including(path)
+				else
+					res
+				endif
+		else
+			res
+		endif
+	)
+;
+
+-----------------------------------------------------------------------------------------      
+-- returns true if a rule matches an automaton state and the corresponding transitions
+-----------------------------------------------------------------------------------------
+helper def : transtionMatch(state: DFA!State, nextState: DFA!State, r: Network!Connection, ri: Network!Connection) : Boolean =
+	-- The name of the rule has to be the same, and the set flags the same as the
+	-- transitions defined in the automaton
+	if (r.states.name.toLower() = state.name.toLower()) then
+		if (state.oclIsTypeOf(DFA!FinalState)) then
+			true
+		else 
+			if (state.transitions->select(e | e.targetState = nextState and e.symbols.literal.toLower() = r.setFlags.name.toLower())->notEmpty()) then
+				if (Sequence{r.srcHost, r.desHost}->includesAll(Sequence{ri.srcHost, ri.desHost})) then
+					true
+				else
+					false
+				endif
+			else
+				false
+			endif
+		endif
+	else
+		false
+	endif
+;
+
+helper def : findTranstionMatch(state: DFA!State, nextState: DFA!State, ri: Network!Connection) : Network!Connection =
+	--It will make sense to have more than one rule??
+	thisModule.RULES->select (e | thisModule.transtionMatch(state, nextState, e, ri))->first()
+;
+
+helper def : getNext(path: Sequence(DFA!State), state: DFA!State) : DFA!State =
+	if not (state.oclIsTypeOf(DFA!FinalState))	then
+		path->at(path->indexOf(state) + 1)
+	else
+		state
+	endif
+;
+
+-----------------------------------------------------------------------------------------      
+-- returns a list of non-consumed states that will be translated later into errors with
+-- a lazy rule
+-----------------------------------------------------------------------------------------
+helper def : consumeAutomaton (path: Sequence(DFA!State), ri:Network!Connection) : Map(String, Sequence(OclAny))=
+	path->iterate(state; result : Map(String, Sequence(OclAny)) = Map{('visited', Sequence{}), ('nonConsumed', Sequence{})}|
+		if (state.name.toLower() = ri.states.name.toLower()) then
+			--we have to check if the flags of ri allows us to transitate until next state
+			result.including('visited', result.get('visited')->append(thisModule.printRule(ri))->flatten())
+		else
+			let foundR : Network!Connection = thisModule.findTranstionMatch(state, thisModule.getNext(path, state), ri) in
+				if not (foundR.oclIsUndefined()) then
+					result.including('visited', result.get('visited')->append(thisModule.printRule(foundR))->flatten())
+				else
+					if not (state.oclIsTypeOf(DFA!FinalState)) then
+						result.including('nonConsumed', result.get('nonConsumed')->append(thisModule.printNewRule(ri, state, path))->flatten())
+					else
+						result
+					endif
+				endif
+		endif
+	)
+;
+
+helper def : findInvalidTransitionMatch(state: String, ri: Network!Connection, transition : String) : Network!Connection =
+	--It will make sense to have more than one rule??
+	thisModule.RULES->select(e | e.states.name = state and e.setFlags.name =  transition and Sequence{e.srcHost, e.desHost}->includesAll(Sequence{ri.srcHost, ri.desHost}))->first()
+;
+
+-----------------------------------------------------------------------------------------      
+-- returns a list of non-consumed states that will be translated later into errors with
+-- a lazy rule
+-----------------------------------------------------------------------------------------
+helper def : consumeNonValidAutomaton (ri:Network!Connection) : Map(String, Sequence(OclAny))=
+	Sequence{DFA!InitialState.allInstances()}->append(DFA!RegularState.allInstances())->flatten()
+	->iterate(s; result : Map(String, Sequence(OclAny)) = Map{('visited', Sequence{}), ('nonConsumed', Sequence{})} |
+		DFA!Symbol.allInstances()->select(e | s.transitions->collect(e | e.symbols.literal)->excludes(e.literal))
+		->iterate(t; partial: Map(String, Sequence(OclAny)) = result |
+			let found : Network!Connection = thisModule.findInvalidTransitionMatch(s.name, ri, t.literal) in
+				if (found.oclIsUndefined()) then
+					Map{('visited', partial.get('visited')), 
+						('nonConsumed', partial.get('nonConsumed')->append(thisModule.printNewDenyRule(ri, s, t))->flatten())}
+				else
+					Map{('visited', partial.get('visited')->append(thisModule.printRule(found))->flatten()), 
+						('nonConsumed', partial.get('nonConsumed'))}
+				endif
+		)
+	)
+;
+
+helper def : printRule(r: Network!Connection) : Network!Connection =
+	r.debug('r= ' + 'SrcAddress = ' + r.srcHost.ipAddress
+		+ ' DstAddress = ' + r.desHost.ipAddress
+		+ ' SPort = ' + r.srcPort + ' DPort = ' + r.dstPort 
+		+ ' transition = ' + r.states.name + ' + ' + r.setFlags.name
+		+ ' Action = ' + r.kind)
+;	
+
+helper def : printNewRule(r: Network!Connection, state: DFA!State, path: Sequence(DFA!State)) : Network!Connection =
+	let tr: DFA!Transition = state.transitions->select(e | e.targetState = thisModule.getNext(path, state))->first() in
+	if (tr.symbols.direction = 'r') then
+		r.debug('m= ' + 'SrcAddress = ' + r.srcHost.ipAddress
+			+ ' DstAddress = ' + r.desHost.ipAddress
+			+ ' SPort = ' + r.srcPort + ' DPort = ' + r.dstPort 
+			+ ' transition = ' + state.name + ' + ' + tr.symbols.literal
+			+ ' Action = ' + r.kind)
+	else
+		r.debug('m= ' + 'SrcAddress = ' + r.desHost.ipAddress
+			+ ' DstAddress = ' + r.srcHost.ipAddress
+			+ ' SPort = ' + r.dstPort + ' DPort = ' + r.srcPort 
+			+ ' transition = ' + state.name + ' + ' + tr.symbols.literal
+			+ ' Action = ' + r.kind)
+	endif
+;
+	
+helper def : printNewDenyRule(r: Network!Connection, state: DFA!State, tr:DFA!Transition) : Network!Connection =
+	if (tr.direction = 'r') then
+		r.debug('m= ' + 'SrcAddress = ' + r.srcHost.ipAddress
+			+ ' DstAddress = ' + r.desHost.ipAddress
+			+ ' SPort = ' + r.srcPort + ' DPort = ' + r.dstPort 
+			+ ' transition = ' + state.name + ' + ' + tr.literal
+			+ ' Action = ' + r.kind)
+	else
+		tr.debug('m= ' + 'SrcAddress = ' + r.desHost.ipAddress
+			+ ' DstAddress = ' + r.srcHost.ipAddress
+			+ ' SPort = ' + r.dstPort + ' DPort = ' + r.srcPort 
+			+ ' transition = ' + state.name + ' + ' + tr.literal
+			+ ' Action = ' + r.kind)
+	endif
+;
+	
+helper def : discovery() : Map(String, Sequence(OclAny)) =
+	
+	thisModule.RULES->iterate(r; res :  Map(String, Sequence(OclAny)) = Map{('visited', Sequence{}), ('result', Sequence{})} |
+		if r.kind = #ACCEPT then
+			if (res.get('visited')->flatten()->excludes(r)) then
+				let L : Set(Sequence(DFA!State)) = thisModule.correlate(thisModule.PATHS, r.states, r.setFlags).debug('Correlate =') in
+					L->iterate(l; subRes : Map(String, Sequence(OclAny)) = res |
+						let partial: Map(String, Sequence(OclAny)) = thisModule.consumeAutomaton(l, r).debug('Subres:') in	
+							Map{('visited', subRes.get('visited')->append(partial.get('visited'))), 
+							('result',subRes.get('result')->append(partial.get('nonConsumed')))}
+					
+					)
+			else
+				res
+			endif
+		else
+			if (res.get('visited')->flatten()->excludes(r)) then
+				let partial: Map(String, Sequence(OclAny)) = thisModule.consumeNonValidAutomaton(r).debug('SubNotValid:') in 
+					Map{('visited', res.get('visited')->append(partial.get('visited'))), 
+					('result',res.get('result')->append(partial.get('nonConsumed')))}
+			else
+				res
+			endif
+		endif
+	)
+;
+
+		
+
+rule registerErrors{
+	from s: DFA!Dfa (thisModule.discovery().debug('Paths:')->toString()->writeTo('/home/salvador/Desktop/experiments/memoryOpen96.txt'))
+	to t: ERRORS!Errors (
+		--errors <- thisModule.discovery().get('visited')
+	)
+}
+
+lazy rule createErrorElement{
+	from 
+		s: OclAny
+	to 
+		t: ERRORS!Error (
+			name<-'assa',
+			connectionRule <- OclUndefined,
+			missingStates <- OclUndefined
+		)
+}
+

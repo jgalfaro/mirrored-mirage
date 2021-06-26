@@ -1,0 +1,21 @@
+iptables -P FORWARD ACCEPT
+       
+iptables -N InvRQ        
+iptables -A InvRQ -j LOG --log-prefix "InvRQ"
+iptables -A InvRQ -j DROP
+      
+iptables -A FORWARD -s 5.6.7.8 -d 1.2.3.4 -p tcp ! --syn --m conntrack --ctstate ESTABLISHED  
+--ctdir ORIGINAL -j InvRQ
+
+iptables -N InvRP
+iptables -A InvRP --tcp-flags ALL SYN -j RETURN
+iptables -A InvRP --tcp-flags ALL SYN,ACK -j RETURN
+iptables -A InvRP --tcp-flags ALL FIN -j RETURN
+iptables -A InvRP -j LOG --log-prefix "InvRP"
+iptables -A InvRP -j DROP
+        
+iptables -A FORWARD -s 1.2.3.4 -d 5.6.7.8 -p tcp --m conntrack --ctstate ESTABLISHED 
+--ctdir REPLY --ctstatus EXPECTED -j InvRP
+
+iptables -A FORWARD -s 5.6.7.8 -d 1.2.3.4 -p tcp --m conntrack --ctstate ESTABLISHED 
+--ctdir ORIGINAL --ctstatus SEEN_REPLY -j InvRP

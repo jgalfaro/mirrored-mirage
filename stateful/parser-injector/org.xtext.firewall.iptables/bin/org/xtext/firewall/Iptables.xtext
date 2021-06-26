@@ -1,0 +1,244 @@
+grammar org.xtext.example.iptables.Iptables with org.eclipse.xtext.common.Terminals
+
+generate iptables "http://www.xtext.org/example/iptables/Iptables"
+
+Model:
+	rules += Rule*;
+
+Rule:
+	declaration=ChainDeclaration | filter=FilterDeclaration
+;
+
+FilterDeclaration:
+	filter=FilteringSpec
+;
+
+FilteringSpec:
+	FilterSpec
+;
+
+FilterSpec:
+	'iptables' option=('-A' | '-D' | '-P') chain=Chain 
+	('-p' protocol=Protocol)? ('-s' ip=IPExpr)? 
+	('-i' interface=Interface)? ('-d' ipDst=IPExpr)?  
+	('--sport' sourcePort=INT)? ('--dport' destinationPort=INT)? 
+	(neg?='!')? (syn?='--syn')? ('-m' matches=Match)? 
+	('--ctstate' states+=State (',' states+=State)*)?
+	('--ctdir' dir=Dir)? ('--ctstatus' status=Status)?  
+	('--state' states+=State (',' states+=State)*)? 
+	('--tcp-flags' examFlags+=TCPFlag (',' examFlags+=TCPFlag)* flags+=TCPFlag (',' flags+=TCPFlag)*)?
+	('-j')? target=Target
+	('--log-prefix' lp=LP)?
+;
+
+Interface:
+	name=ID
+;
+
+LP:
+	name=STRING
+;
+
+Match:
+	name=(Conntrack|StateMatch)
+;
+
+Dir:
+	ID
+;
+
+Status:
+	ID
+;
+
+Conntrack:
+	'conntrack'
+;
+
+StateMatch:
+	'State'
+;
+
+
+State:
+	name=(NormalMatchStates | StateFulMatchStates)
+;
+
+StateFulMatchStates:
+	(NoneS | SynSent | SynRecv | Established | FinWait | CloseWait | LastAck | TimeWait | Close)
+;
+
+NormalMatchStates:
+	(New)
+;
+
+New:
+	'NEW'
+;
+
+NoneS:
+	'NONE'
+;
+
+SynSent:
+	'SYN_SENT'
+;
+
+SynRecv:
+	'SYN_RECV'
+;
+
+Established:
+	'ESTABLISHED'
+;
+
+FinWait:
+	'FIN_WAIT'
+;
+
+CloseWait:
+	'CLOSE_WAIT'
+;
+
+LastAck:
+	'LAST_ACK'
+;
+
+TimeWait:
+	'TIME_WAIT'
+;
+
+Close:
+	'CLOSE'
+;
+
+
+TCPFlag:
+	name=(Syn | Ack | Fin | Rst | All | None | Psh | Urg)
+;
+
+Syn:
+	'SYN'
+;
+
+Ack:
+	'ACK'
+;
+
+Fin:
+	'FIN'
+;
+
+Rst:
+	'RST'
+;
+
+All:
+	'ALL'
+;
+
+None:
+	'NONE'
+;
+
+Psh:
+	'PSH'
+;
+
+Urg:
+	'URG'
+;
+
+
+Protocol:
+	Tcp | Udp | Icmp
+;
+
+Tcp:
+	'tcp'
+;
+
+Udp:
+	'udp'
+;
+
+Icmp:
+	'icmp'
+;
+
+//Target:
+//	defaultTarget=DefaultTarget | customChain=CustomChain
+//;
+
+Target:
+	ID
+;
+
+//DefaultTarget:
+//	Accept | Drop | Return
+//	;
+	
+//Accept:
+//	'ACCEPT'
+//;
+
+//Drop:
+//	'DROP'
+//;
+
+//Return:
+//	'RETURN'
+//;
+
+Chain:
+	//defaultChain = DefaultChain | customChain = CustomChain
+	chainName = ID
+;
+
+//DefaultChain:
+//	Input | Output | Forward
+//;
+
+//CustomChain:
+//	name=[ChainName]
+//;
+
+//ChainID:
+//	('INPUT' | 'OUTPUT' | 'FORWARD' | CustomChain)
+//;
+
+CustomChain:
+	name=[ChainName]
+;
+
+//Input:
+//	'INPUT'
+//;
+
+//Output:
+//	'OUTPUT'
+//;
+
+//Forward:
+//	'FORWARD'
+//;
+
+ChainDeclaration:
+	'iptables' '-N' ChainName
+;
+
+ChainName:
+	name=ID
+;
+
+IPExpr:
+	ipByteExpr '.' ipByteExpr '.' ipByteExpr '.' ipByteExpr (IpRangeExpr)?
+;
+
+ipByteExpr:
+	INT
+;
+
+IpRangeExpr:
+	'/' INT
+;

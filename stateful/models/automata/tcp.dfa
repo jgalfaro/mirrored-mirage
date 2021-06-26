@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dfa:Dfa xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:dfa="dfa" name="TCP">
+  <language name="TCP flags">
+    <symbols literal="Syn" description="S"/>
+    <symbols literal="Syn+Ack" description="SA"/>
+    <symbols literal="Fin" description="F"/>
+    <symbols literal="Rst" description="R"/>
+    <symbols literal="Fin+Ack" description="FA"/>
+    <symbols literal="Ack" description="A"/>
+  </language>
+  <regularStates name="Request">
+    <transitions targetState="//@regularStates.1" symbols="//@language/@symbols.1"/>
+    <transitions targetState="//@regularStates.0" symbols="//@language/@symbols.0"/>
+  </regularStates>
+  <regularStates name="Established">
+    <transitions targetState="//@regularStates.2" symbols="//@language/@symbols.5"/>
+    <transitions targetState="//@regularStates.1" symbols="//@language/@symbols.0 //@language/@symbols.1"/>
+  </regularStates>
+  <regularStates name="Transfer">
+    <transitions targetState="//@regularStates.2" symbols="//@language/@symbols.5"/>
+    <transitions targetState="//@regularStates.3" symbols="//@language/@symbols.2"/>
+    <transitions targetState="//@finalStates.0" symbols="//@language/@symbols.3"/>
+  </regularStates>
+  <regularStates name="Closing">
+    <transitions targetState="//@regularStates.3" symbols="//@language/@symbols.5 //@language/@symbols.2"/>
+    <transitions targetState="//@finalStates.0" symbols="//@language/@symbols.4 //@language/@symbols.3"/>
+  </regularStates>
+  <initialState name="Listen">
+    <transitions targetState="//@regularStates.0" symbols="//@language/@symbols.0"/>
+  </initialState>
+  <finalStates name="Closed"/>
+</dfa:Dfa>

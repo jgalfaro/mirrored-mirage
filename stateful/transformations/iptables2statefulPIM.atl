@@ -1,0 +1,1697 @@
+-- @path StatefulPIM=/atlanmod.firewall.stateful.examples/metamodels/network.ecore
+-- @path Iptables=/atlanmod.firewall.stateful.examples/metamodels/Iptables.ecore
+
+module iptables2statefulPIM;
+create OUT : StatefulPIM from IN : Iptables, IN1 : HOSTS;
+
+helper def : findHost (IPAddress:String) : HOSTS!Host =
+	HOSTS!Host->allInstances()->select(e | e.ipAddress = IPAddress).first()
+;
+
+helper context Iptables!FilterSpec def : isOfState(state: String, flag: String) : Boolean = 
+	if  self.states->isEmpty() then
+		false
+	else
+		self.states->first().name = state
+	endif
+	and
+	if  self.flags->isEmpty() or self.flags.size() > 1 then
+		false
+	else
+		self.flags->first().name = flag
+	endif
+;
+
+helper context Iptables!FilterSpec def : isState(state: String) : Boolean = 
+	if  self.states->isEmpty() then
+		false
+	else
+		self.states->first().name = state
+	endif
+;
+
+helper context Iptables!FilterSpec def : isOriginal() : Boolean = 
+	if  self.dir.oclIsUndefined() then
+		false
+	else 
+		if (self.dir = 'ORIGINAL') then
+			true
+		else
+			false
+		endif
+	endif
+;
+
+helper context Iptables!FilterSpec def : isOfStateAndStatus(state: String, status: String, flag: String) : Boolean = 
+	if  self.states->isEmpty() then
+		false
+	else
+		self.states->first().name = state
+	endif
+	and
+	if  self.status.oclIsUndefined() then
+		false
+	else
+		self.status = status
+	endif
+	and
+	if  self.flags->isEmpty()	then
+		false
+	else
+		self.flags->collect(e | e.name)->iterate(sub; res : String = '' |
+			if res = '' then
+				res + sub
+			else
+				res + '+' + sub
+			endif
+		) = flag
+	endif
+;
+
+helper context Iptables!FilterSpec def : isStateAndStatus(state: String, status: String) : Boolean = 
+	if  self.states->isEmpty() then
+		false
+	else
+		self.states->first().name = state
+	endif
+	and
+	if  self.status.oclIsUndefined() then
+		false
+	else
+		self.status = status
+	endif
+;
+
+helper context Iptables!FilterSpec def : equal(r: Iptables!FilterSpec) : Boolean =
+	if self.states.isEmpty() or r.states.isEmpty() then
+		false
+	else
+		if self.flags.isEmpty() or r.flags.isEmpty() then
+			false
+		else
+			if  self.chain.chainName = r.chain.chainName 
+				and self.states.first().name = r.states.first().name 
+				and self.flags->size() = r.flags->size()
+				and self.flags->forAll(e | r.flags->exists(x | x.name = e.name)) then
+				true
+			else
+				false
+			endif
+		endif
+	endif
+;
+
+helper def : FirstPathRules: Sequence (Iptables!FilterSpec) =
+	let list : Sequence(String) = Iptables!FilterSpec->allInstances()->collect(e|e.ip).debug('ips:')->asOrderedSet()->
+	asSequence()->reject(e | e.oclIsUndefined()).debug('ipss:') in
+	 let ips : Sequence(String) = list->select(e | list->indexOf(e).mod(2) <> 0).debug('FinalIPs') in
+		Iptables!FilterSpec->allInstances()->select(e | ips->includes(e.ip))
+		
+		
+	
+	--Iptables!FilterSpec->allInstances()->select(e | e.ip = ip)
+;
+
+helper def : STRANSITIONS: Map (String, String) =
+	Map {('SYN','E1'), ('SYN+ACK', 'E3'), ('ACK', 'E5'), ('ACK+FIN', 'E7')}	
+;
+
+helper def : RTRANSITIONS: Map (String, String) =
+	Map {('SYN','E2'), ('SYN+ACK', 'E4'), ('ACK', 'E6'), ('ACK+FIN', 'E8')}
+;
+
+helper def : nonValidNewRules: Sequence(Iptables!FilterSpec) =
+	let allRules : Sequence(Iptables!FilteringSpec) = Iptables!FilterSpec.allInstances() in
+		allRules->iterate(r; res:Sequence(Iptables!FilterSpec) = Sequence{} |
+			res->append(allRules->select(e | e <> r 
+			and r.isState('NEW')
+			and r.isState('NEW')
+			and r.equal(e) 
+			and (r.ip = e.ipDst) 
+			and (r.ipDst = e.ip)
+			and not r.normalTransition()
+			and not e.normalTransition())->first())
+		)
+		
+;
+
+
+helper def : aggregateFlags (flags : Sequence(Iptables!TCPFlag)) : String =
+	flags->collect(e | e.name)->iterate(sub; res : String = '' |
+		if res = '' then
+			res + sub
+		else
+			res + '+' + sub
+		endif
+	)
+;
+
+helper context Iptables!FilterSpec def : normalTransition() : Boolean = 
+	if  self.flags->isEmpty()	then
+		false
+	else
+		thisModule.STRANSITIONS.getKeys()->includes(thisModule.aggregateFlags(self.flags))
+	endif
+;
+
+
+rule model2Network{
+	from
+		s:Iptables!Model
+	to
+		t: StatefulPIM!Network  (
+			
+		)
+}
+
+
+rule filterNew2ConnectionsQ0{
+	from
+		s1: Iptables!FilterSpec,
+		s2: Iptables!FilterSpec (thisModule.FirstPathRules->includes(s1)
+			and s1.isOfState('NEW', 'SYN') 
+			and s2.isOfState('NEW', 'SYN') 
+			and s2.ip = s1.ipDst 
+			and s2.ipDst = s1.ip)
+	to
+		t: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s1.sourcePort.debug('R0 matched'),
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state,
+			setFlags <- event,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state: StatefulPIM!State (
+			name <- 'Q0'
+		),
+		event: StatefulPIM!Flag (
+			name <- 'E2'
+		),
+		
+		t2: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s2.sourcePort,
+			dstPort <- s2.destinationPort,
+			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s2.protocol,
+			states <- state2,
+			setFlags <- event2,
+			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+		),
+		state2: StatefulPIM!State (
+			name <- 'Q0'
+		),
+		event2: StatefulPIM!Flag (
+			name <- 'E1'
+		)
+}
+
+
+
+rule filterEstablished2ConnectionsQ1Q2{
+	from
+		s1: Iptables!FilterSpec,
+		s2: Iptables!FilterSpec (thisModule.FirstPathRules->includes(s1)
+			and s1.isOfStateAndStatus('ESTABLISHED', 'SEEN_REPLY', 'SYN+ACK') 
+			and s2.isOfStateAndStatus('ESTABLISHED', 'SEEN_REPLY', 'SYN+ACK')
+			and s2.ip = s1.ipDst 
+			and s2.ipDst = s1.ip)
+	to
+		t: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s1.sourcePort.debug('R2 matched'),
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state,
+			setFlags <- event,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state: StatefulPIM!State (
+			name <- 'Q1'
+		),
+		event: StatefulPIM!Flag (
+			name <- 'E4'
+		),
+		
+		t2: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s2.sourcePort,
+			dstPort <- s2.destinationPort,
+			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s2.protocol,
+			states <- state2,
+			setFlags <- event2,
+			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+		),
+		state2: StatefulPIM!State (
+			name <- 'Q2'
+		),
+		event2: StatefulPIM!Flag (
+			name <- 'E3'
+		)
+}
+
+rule filterEstablished2ConnectionsQ3Q4Q5{
+	from
+		s1: Iptables!FilterSpec,
+		s2: Iptables!FilterSpec (thisModule.FirstPathRules->includes(s1)
+			and s1.isOfStateAndStatus('ESTABLISHED', 'ASSURED', 'ACK') 
+			and s2.isOfStateAndStatus('ESTABLISHED', 'ASSURED', 'ACK')
+			and s2.ip = s1.ipDst 
+			and s2.ipDst = s1.ip)
+	to
+		t: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s1.sourcePort,
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state,
+			setFlags <- event,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state: StatefulPIM!State (
+			name <- 'Q4'
+		),
+		event: StatefulPIM!Flag (
+			name <- 'E6'
+		),
+		
+		t2: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s2.sourcePort,
+			dstPort <- s2.destinationPort,
+			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s2.protocol,
+			states <- state2,
+			setFlags <- event2,
+			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+		),
+		state2: StatefulPIM!State (
+			name <- 'Q3'
+		),
+		event2: StatefulPIM!Flag (
+			name <- 'E5'
+		),
+		
+		t3: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections)(
+			srcPort <- s1.sourcePort,
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state3,
+			setFlags <- event3,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state3: StatefulPIM!State (
+			name <- 'Q5'
+		),
+		event3: StatefulPIM!Flag (
+			name <- 'E5'
+		),
+		
+		t4: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections)(
+			srcPort <- s2.sourcePort,
+			dstPort <- s2.destinationPort,
+			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s2.protocol,
+			states <- state4,
+			setFlags <- event4,
+			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+		),
+		state4: StatefulPIM!State (
+			name <- 'Q5'
+		),
+		event4: StatefulPIM!Flag (
+			name <- 'E6'
+		)
+		
+		
+--		t5: StatefulPIM!Connection -> (StatefulPIM!Network.allInstances()->first().connections) (
+--			srcPort <- s1.sourcePort,
+--			dstPort <- s1.destinationPort,
+--			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s1.protocol,
+--			states <- state5,
+--			setFlags <- event5
+--		),
+--		state5: StatefulPIM!State (
+--			name <- 'Q7'
+--		),
+--		event5: StatefulPIM!Flag (
+--			name <- 'E6'
+--		),
+--		
+--		t6: StatefulPIM!Connection -> (StatefulPIM!Network.allInstances()->first().connections) (
+--			srcPort <- s2.sourcePort,
+--			dstPort <- s2.destinationPort,
+--			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s2.protocol,
+--			states <- state6,
+--			setFlags <- event6
+--		),
+--		state6: StatefulPIM!State (
+--			name <- 'Q8'
+--		),
+--		event6: StatefulPIM!Flag (
+--			name <- 'E5'
+--		),
+--		
+--		t7: StatefulPIM!Connection -> (StatefulPIM!Network.allInstances()->first().connections) (
+--			srcPort <- s1.sourcePort,
+--			dstPort <- s1.destinationPort,
+--			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s1.protocol,
+--			states <- state7,
+--			setFlags <- event7
+--		),
+--		state7: StatefulPIM!State (
+--			name <- 'Q12'
+--		),
+--		event7: StatefulPIM!Flag (
+--			name <- 'E6'
+--		),
+--		
+--		t8: StatefulPIM!Connection -> (StatefulPIM!Network.allInstances()->first().connections) (
+--			srcPort <- s2.sourcePort,
+--			dstPort <- s2.destinationPort,
+--			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s2.protocol,
+--			states <- state8,
+--			setFlags <- event8
+--		),
+--		state8: StatefulPIM!State (
+--			name <- 'Q9'
+--		),
+--		event8: StatefulPIM!Flag (
+--			name <- 'E5'
+--		)
+}
+
+rule filterEstablished2ConnectionsQ6Q11Q7Q10{
+	from
+		s1: Iptables!FilterSpec,
+		s2: Iptables!FilterSpec (thisModule.FirstPathRules->includes(s1)
+			and s1.chain.chainName = 'ACCEPT'
+			and s1.isOfStateAndStatus('ESTABLISHED', 'SEEN_REPLY', 'ACK+FIN') 
+			and s2.isOfStateAndStatus('ESTABLISHED', 'SEEN_REPLY', 'ACK+FIN')
+			and s2.ip = s1.ipDst 
+			and s2.ipDst = s1.ip)
+	to
+		t: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s1.sourcePort,
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state,
+			setFlags <- event,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state: StatefulPIM!State (
+			name <- 'Q6'
+		),
+		event: StatefulPIM!Flag (
+			name <- 'E8'
+		),
+		
+		t2: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s2.sourcePort,
+			dstPort <- s2.destinationPort,
+			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s2.protocol,
+			states <- state2,
+			setFlags <- event2,
+			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+		),
+		state2: StatefulPIM!State (
+			name <- 'Q6'
+		),
+		event2: StatefulPIM!Flag (
+			name <- 'E7'
+		),
+		
+		t3: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s1.sourcePort,
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state3,
+			setFlags <- event3,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state3: StatefulPIM!State (
+			name <- 'Q7'
+		),
+		event3: StatefulPIM!Flag (
+			name <- 'E8'
+		),
+		
+		t4: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s1.sourcePort,
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state4,
+			setFlags <- event4,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state4: StatefulPIM!State (
+			name <- 'Q10'
+		),
+		event4: StatefulPIM!Flag (
+			name <- 'E8'
+		),
+		
+		t5: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s2.sourcePort,
+			dstPort <- s2.destinationPort,
+			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s2.protocol,
+			states <- state5,
+			setFlags <- event5,
+			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+		),
+		state5: StatefulPIM!State (
+			name <- 'Q11'
+		),
+		event5: StatefulPIM!Flag (
+			name <- 'E7'
+		)
+}
+
+------------------------------------------------------------------------------------------------------------
+-- This rules are for the open case
+------------------------------------------------------------------------------------------------------------
+rule filterDropNew2ConnectionsQ0{
+	from
+		s1: Iptables!FilterSpec,
+		s2: Iptables!FilterSpec (thisModule.FirstPathRules->includes(s1)
+			and s1.target = 'DROP'
+			and s1.isState('NEW')
+			and s2.isState('NEW')
+			and s1.equal(s2)
+			and not s1.isOfState('NEW', 'SYN') 
+			and not s2.isOfState('NEW', 'SYN') 
+			and (s2.ip = s1.ipDst) 
+			and (s2.ipDst = s1.ip)
+			and s1.normalTransition()
+			and s2.normalTransition())
+	to
+		t: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s1.sourcePort.debug('R1 matched'),
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state,
+			setFlags <- event,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state: StatefulPIM!State (
+			name <- 'Q0'
+		),
+		event: StatefulPIM!Flag (
+			name <- thisModule.RTRANSITIONS.get(thisModule.aggregateFlags(s1.flags))
+		),
+		
+		t2: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s2.sourcePort,
+			dstPort <- s2.destinationPort,
+			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s2.protocol,
+			states <- state2,
+			setFlags <- event2,
+			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+		),
+		state2: StatefulPIM!State (
+			name <- 'Q0'
+		),
+		event2: StatefulPIM!Flag (
+			name <- thisModule.STRANSITIONS.get(thisModule.aggregateFlags(s2.flags))
+		)
+}
+
+--rule filterDropNewInv2ConnectionsQ0{
+--	from
+--		s1: Iptables!FilterSpec,
+--		s2: Iptables!FilterSpec (thisModule.FirstPathRules->includes(s1).debug('includes')
+--			and s1.isState('NEW')
+--			and s2.isState('NEW')
+--			and s1.equal(s2)
+--			and not s1.isOfState('NEW', 'SYN') 
+--			and not s2.isOfState('NEW', 'SYN') 
+--			and (s2.ip = s1.ipDst) 
+--			and (s2.ipDst = s1.ip)
+--			and not s1.normalTransition()
+--			and not s2.normalTransition())
+--	to
+--		t: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s1.sourcePort.debug('R1 matched'),
+--			dstPort <- s1.destinationPort,
+--			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s1.protocol,
+--			states <- state,
+--			setFlags <- event,
+--			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+--		),
+--		state: StatefulPIM!State (
+--			name <- 'Q0'
+--		),
+--		event: StatefulPIM!Flag (
+--			name <- 'E10'
+--		),
+--		
+--		t2: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s2.sourcePort,
+--			dstPort <- s2.destinationPort,
+--			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s2.protocol,
+--			states <- state2,
+--			setFlags <- event2,
+--			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+--		),
+--		state2: StatefulPIM!State (
+--			name <- 'Q0'
+--		),
+--		event2: StatefulPIM!Flag (
+--			name <- 'E9'
+--		)
+--}
+
+rule filterDropEstablishedSeen2Connections{
+	from
+		s1: Iptables!FilterSpec,
+		s2: Iptables!FilterSpec (thisModule.FirstPathRules->includes(s1)
+			and s1.target = 'DROP'
+			and not s1.isOfStateAndStatus('ESTABLISHED', 'SEEN_REPLY', 'SYN+ACK') 
+			and not s2.isOfStateAndStatus('ESTABLISHED', 'SEEN_REPLY', 'SYN+ACK')
+			and s1.isStateAndStatus('ESTABLISHED', 'SEEN_REPLY') 
+			and s2.isStateAndStatus('ESTABLISHED', 'SEEN_REPLY')
+			and s1.equal(s2)
+			and s2.ip = s1.ipDst 
+			and s2.ipDst = s1.ip
+			and s1.normalTransition()
+			and s2.normalTransition())
+	to
+		t: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s1.sourcePort.debug('R2 SEEN  drop matched'),
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state,
+			setFlags <- event,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state: StatefulPIM!State (
+			name <- 'Q1'
+		),
+		event: StatefulPIM!Flag (
+			name <- thisModule.RTRANSITIONS.get(thisModule.aggregateFlags(s1.flags))
+		),
+		
+		t2: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s1.sourcePort,
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state2,
+			setFlags <- event2,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state2: StatefulPIM!State (
+			name <- 'Q2'
+		),
+		event2: StatefulPIM!Flag (
+			name <- thisModule.RTRANSITIONS.get(thisModule.aggregateFlags(s1.flags))
+		),
+		
+		t3: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s1.sourcePort,
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state3,
+			setFlags <- event3,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state3: StatefulPIM!State (
+			name <- 'Q3'
+		),
+		event3: StatefulPIM!Flag (
+			name <- thisModule.RTRANSITIONS.get(thisModule.aggregateFlags(s1.flags))
+		),
+		
+		t4: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s1.sourcePort,
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state4,
+			setFlags <- event4,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state4: StatefulPIM!State (
+			name <- 'Q4'
+		),
+		event4: StatefulPIM!Flag (
+			name <- thisModule.RTRANSITIONS.get(thisModule.aggregateFlags(s1.flags))
+		),
+		
+		t6: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s1.sourcePort,
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state6,
+			setFlags <- event6,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state6: StatefulPIM!State (
+			name <- 'Q6'
+		),
+		event6: StatefulPIM!Flag (
+			name <- thisModule.RTRANSITIONS.get(thisModule.aggregateFlags(s1.flags))
+		),
+		
+		t7: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s1.sourcePort,
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state7,
+			setFlags <- event7,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state7: StatefulPIM!State (
+			name <- 'Q7'
+		),
+		event7: StatefulPIM!Flag (
+			name <- thisModule.RTRANSITIONS.get(thisModule.aggregateFlags(s1.flags))
+		),
+		
+		t8: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s1.sourcePort,
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state8,
+			setFlags <- event8,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state8: StatefulPIM!State (
+			name <- 'Q8'
+		),
+		event8: StatefulPIM!Flag (
+			name <- thisModule.RTRANSITIONS.get(thisModule.aggregateFlags(s1.flags))
+		),
+		
+		t9: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s1.sourcePort,
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state9,
+			setFlags <- event9,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state9: StatefulPIM!State (
+			name <- 'Q9'
+		),
+		event9: StatefulPIM!Flag (
+			name <- thisModule.RTRANSITIONS.get(thisModule.aggregateFlags(s1.flags))
+		),
+		
+		t10: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s1.sourcePort,
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state10,
+			setFlags <- event10,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state10: StatefulPIM!State (
+			name <- 'Q10'
+		),
+		event10: StatefulPIM!Flag (
+			name <- thisModule.RTRANSITIONS.get(thisModule.aggregateFlags(s1.flags))
+		),
+		
+		t11: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s1.sourcePort,
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state11,
+			setFlags <- event11,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state11: StatefulPIM!State (
+			name <- 'Q11'
+		),
+		event11: StatefulPIM!Flag (
+			name <- thisModule.RTRANSITIONS.get(thisModule.aggregateFlags(s1.flags))
+		),
+		
+		t12: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s1.sourcePort,
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state12,
+			setFlags <- event12,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state12: StatefulPIM!State (
+			name <- 'Q12'
+		),
+		event12: StatefulPIM!Flag (
+			name <- thisModule.RTRANSITIONS.get(thisModule.aggregateFlags(s1.flags))
+		),
+		
+		rt1: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s2.sourcePort,
+			dstPort <- s2.destinationPort,
+			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s2.protocol,
+			states <- rstate1,
+			setFlags <- revent1,
+			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+		),
+		rstate1: StatefulPIM!State (
+			name <- 'Q1'
+		),
+		revent1: StatefulPIM!Flag (
+			name <- thisModule.STRANSITIONS.get(thisModule.aggregateFlags(s2.flags))
+		),
+		
+		rt2: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s2.sourcePort,
+			dstPort <- s2.destinationPort,
+			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s2.protocol,
+			states <- rstate2,
+			setFlags <- revent2,
+			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+		),
+		rstate2: StatefulPIM!State (
+			name <- 'Q2'
+		),
+		revent2: StatefulPIM!Flag (
+			name <- thisModule.STRANSITIONS.get(thisModule.aggregateFlags(s2.flags))
+		),
+		
+		rt3: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s2.sourcePort,
+			dstPort <- s2.destinationPort,
+			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s2.protocol,
+			states <- rstate3,
+			setFlags <- revent3,
+			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+		),
+		rstate3: StatefulPIM!State (
+			name <- 'Q3'
+		),
+		revent3: StatefulPIM!Flag (
+			name <- thisModule.STRANSITIONS.get(thisModule.aggregateFlags(s2.flags))
+		),
+		
+		rt4: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s2.sourcePort,
+			dstPort <- s2.destinationPort,
+			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s2.protocol,
+			states <- rstate4,
+			setFlags <- revent4,
+			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+		),
+		rstate4: StatefulPIM!State (
+			name <- 'Q4'
+		),
+		revent4: StatefulPIM!Flag (
+			name <- thisModule.STRANSITIONS.get(thisModule.aggregateFlags(s2.flags))
+		),
+		
+		rt6: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s2.sourcePort,
+			dstPort <- s2.destinationPort,
+			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s2.protocol,
+			states <- rstate6,
+			setFlags <- revent6,
+			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+		),
+		rstate6: StatefulPIM!State (
+			name <- 'Q6'
+		),
+		revent6: StatefulPIM!Flag (
+			name <- thisModule.STRANSITIONS.get(thisModule.aggregateFlags(s2.flags))
+		),
+		
+		rt7: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s2.sourcePort,
+			dstPort <- s2.destinationPort,
+			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s2.protocol,
+			states <- rstate7,
+			setFlags <- revent7,
+			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+		),
+		rstate7: StatefulPIM!State (
+			name <- 'Q7'
+		),
+		revent7: StatefulPIM!Flag (
+			name <- thisModule.STRANSITIONS.get(thisModule.aggregateFlags(s2.flags))
+		),
+		
+		rt8: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s2.sourcePort,
+			dstPort <- s2.destinationPort,
+			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s2.protocol,
+			states <- rstate8,
+			setFlags <- revent8,
+			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+		),
+		rstate8: StatefulPIM!State (
+			name <- 'Q8'
+		),
+		revent8: StatefulPIM!Flag (
+			name <- thisModule.STRANSITIONS.get(thisModule.aggregateFlags(s2.flags))
+		),
+		
+		rt9: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s2.sourcePort,
+			dstPort <- s2.destinationPort,
+			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s2.protocol,
+			states <- rstate9,
+			setFlags <- revent9,
+			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+		),
+		rstate9: StatefulPIM!State (
+			name <- 'Q9'
+		),
+		revent9: StatefulPIM!Flag (
+			name <- thisModule.STRANSITIONS.get(thisModule.aggregateFlags(s2.flags))
+		),
+		
+		rt10: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s2.sourcePort,
+			dstPort <- s2.destinationPort,
+			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s2.protocol,
+			states <- rstate10,
+			setFlags <- revent10,
+			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+		),
+		rstate10: StatefulPIM!State (
+			name <- 'Q10'
+		),
+		revent10: StatefulPIM!Flag (
+			name <- thisModule.STRANSITIONS.get(thisModule.aggregateFlags(s2.flags))
+		),
+		
+		rt11: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s2.sourcePort,
+			dstPort <- s2.destinationPort,
+			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s2.protocol,
+			states <- rstate11,
+			setFlags <- revent11,
+			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+		),
+		rstate11: StatefulPIM!State (
+			name <- 'Q11'
+		),
+		revent11: StatefulPIM!Flag (
+			name <- thisModule.STRANSITIONS.get(thisModule.aggregateFlags(s2.flags))
+		),
+		
+		rt12: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s2.sourcePort,
+			dstPort <- s2.destinationPort,
+			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s2.protocol,
+			states <- rstate12,
+			setFlags <- revent12,
+			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+		),
+		rstate12: StatefulPIM!State (
+			name <- 'Q12'
+		),
+		revent12: StatefulPIM!Flag (
+			name <- thisModule.STRANSITIONS.get(thisModule.aggregateFlags(s2.flags))
+		)
+}
+
+--rule filterDropEstablishedSeenInv2Connections{
+--	from
+--		s1: Iptables!FilterSpec,
+--		s2: Iptables!FilterSpec (thisModule.FirstPathRules->includes(s1)
+--			and not s1.isOfStateAndStatus('ESTABLISHED', 'SEEN_REPLY', 'SYN+ACK') 
+--			and not s2.isOfStateAndStatus('ESTABLISHED', 'SEEN_REPLY', 'SYN+ACK')
+--			and s1.isStateAndStatus('ESTABLISHED', 'SEEN_REPLY') 
+--			and s2.isStateAndStatus('ESTABLISHED', 'SEEN_REPLY')
+--			and s1.equal(s2)
+--			and s2.ip = s1.ipDst 
+--			and s2.ipDst = s1.ip
+--			and not s1.normalTransition()
+--			and not s2.normalTransition())
+--	to
+--		t: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s1.sourcePort.debug('R2 matched'),
+--			dstPort <- s1.destinationPort,
+--			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s1.protocol,
+--			states <- state,
+--			setFlags <- event,
+--			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+--		),
+--		state: StatefulPIM!State (
+--			name <- 'Q1'
+--		),
+--		event: StatefulPIM!Flag (
+--			name <- 'E10'
+--		),
+--		
+--		t2: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s1.sourcePort,
+--			dstPort <- s1.destinationPort,
+--			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s1.protocol,
+--			states <- state2,
+--			setFlags <- event2,
+--			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+--		),
+--		state2: StatefulPIM!State (
+--			name <- 'Q2'
+--		),
+--		event2: StatefulPIM!Flag (
+--			name <- 'E10'
+--		),
+--		
+--		t3: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s1.sourcePort,
+--			dstPort <- s1.destinationPort,
+--			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s1.protocol,
+--			states <- state3,
+--			setFlags <- event3,
+--			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+--		),
+--		state3: StatefulPIM!State (
+--			name <- 'Q3'
+--		),
+--		event3: StatefulPIM!Flag (
+--			name <- 'E10'
+--		),
+--		
+--		t4: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s1.sourcePort,
+--			dstPort <- s1.destinationPort,
+--			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s1.protocol,
+--			states <- state4,
+--			setFlags <- event4,
+--			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+--		),
+--		state4: StatefulPIM!State (
+--			name <- 'Q4'
+--		),
+--		event4: StatefulPIM!Flag (
+--			name <- 'E10'
+--		),
+--		
+--		t6: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s1.sourcePort,
+--			dstPort <- s1.destinationPort,
+--			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s1.protocol,
+--			states <- state6,
+--			setFlags <- event6,
+--			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+--		),
+--		state6: StatefulPIM!State (
+--			name <- 'Q6'
+--		),
+--		event6: StatefulPIM!Flag (
+--			name <- 'E10'
+--		),
+--		
+--		t7: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s1.sourcePort,
+--			dstPort <- s1.destinationPort,
+--			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s1.protocol,
+--			states <- state7,
+--			setFlags <- event7,
+--			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+--		),
+--		state7: StatefulPIM!State (
+--			name <- 'Q7'
+--		),
+--		event7: StatefulPIM!Flag (
+--			name <- 'E10'
+--		),
+--		
+--		t8: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s1.sourcePort,
+--			dstPort <- s1.destinationPort,
+--			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s1.protocol,
+--			states <- state8,
+--			setFlags <- event8,
+--			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+--		),
+--		state8: StatefulPIM!State (
+--			name <- 'Q8'
+--		),
+--		event8: StatefulPIM!Flag (
+--			name <- 'E10'
+--		),
+--		
+--		t9: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s1.sourcePort,
+--			dstPort <- s1.destinationPort,
+--			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s1.protocol,
+--			states <- state9,
+--			setFlags <- event9,
+--			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+--		),
+--		state9: StatefulPIM!State (
+--			name <- 'Q9'
+--		),
+--		event9: StatefulPIM!Flag (
+--			name <- 'E10'
+--		),
+--		
+--		t10: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s1.sourcePort,
+--			dstPort <- s1.destinationPort,
+--			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s1.protocol,
+--			states <- state10,
+--			setFlags <- event10,
+--			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+--		),
+--		state10: StatefulPIM!State (
+--			name <- 'Q10'
+--		),
+--		event10: StatefulPIM!Flag (
+--			name <- 'E10'
+--		),
+--		
+--		t11: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s1.sourcePort,
+--			dstPort <- s1.destinationPort,
+--			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s1.protocol,
+--			states <- state11,
+--			setFlags <- event11,
+--			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+--		),
+--		state11: StatefulPIM!State (
+--			name <- 'Q11'
+--		),
+--		event11: StatefulPIM!Flag (
+--			name <- 'E10'
+--		),
+--		
+--		t12: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s1.sourcePort,
+--			dstPort <- s1.destinationPort,
+--			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s1.protocol,
+--			states <- state12,
+--			setFlags <- event12,
+--			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+--		),
+--		state12: StatefulPIM!State (
+--			name <- 'Q12'
+--		),
+--		event12: StatefulPIM!Flag (
+--			name <- 'E10'
+--		),
+--		
+--		rt1: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s2.sourcePort,
+--			dstPort <- s2.destinationPort,
+--			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s2.protocol,
+--			states <- rstate1,
+--			setFlags <- revent1,
+--			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+--		),
+--		rstate1: StatefulPIM!State (
+--			name <- 'Q1'
+--		),
+--		revent1: StatefulPIM!Flag (
+--			name <- 'E9'
+--		),
+--		
+--		rt2: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s2.sourcePort,
+--			dstPort <- s2.destinationPort,
+--			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s2.protocol,
+--			states <- rstate2,
+--			setFlags <- revent2,
+--			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+--		),
+--		rstate2: StatefulPIM!State (
+--			name <- 'Q2'
+--		),
+--		revent2: StatefulPIM!Flag (
+--			name <- 'E9'
+--		),
+--		
+--		rt3: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s2.sourcePort,
+--			dstPort <- s2.destinationPort,
+--			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s2.protocol,
+--			states <- rstate3,
+--			setFlags <- revent3,
+--			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+--		),
+--		rstate3: StatefulPIM!State (
+--			name <- 'Q3'
+--		),
+--		revent3: StatefulPIM!Flag (
+--			name <- 'E9'
+--		),
+--		
+--		rt4: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s2.sourcePort,
+--			dstPort <- s2.destinationPort,
+--			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s2.protocol,
+--			states <- rstate4,
+--			setFlags <- revent4,
+--			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+--		),
+--		rstate4: StatefulPIM!State (
+--			name <- 'Q4'
+--		),
+--		revent4: StatefulPIM!Flag (
+--			name <- 'E9'
+--		),
+--		
+--		rt6: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s2.sourcePort,
+--			dstPort <- s2.destinationPort,
+--			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s2.protocol,
+--			states <- rstate6,
+--			setFlags <- revent6,
+--			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+--		),
+--		rstate6: StatefulPIM!State (
+--			name <- 'Q6'
+--		),
+--		revent6: StatefulPIM!Flag (
+--			name <- 'E9'
+--		),
+--		
+--		rt7: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s2.sourcePort,
+--			dstPort <- s2.destinationPort,
+--			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s2.protocol,
+--			states <- rstate7,
+--			setFlags <- revent7,
+--			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+--		),
+--		rstate7: StatefulPIM!State (
+--			name <- 'Q7'
+--		),
+--		revent7: StatefulPIM!Flag (
+--			name <- 'E9'
+--		),
+--		
+--		rt8: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s2.sourcePort,
+--			dstPort <- s2.destinationPort,
+--			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s2.protocol,
+--			states <- rstate8,
+--			setFlags <- revent8,
+--			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+--		),
+--		rstate8: StatefulPIM!State (
+--			name <- 'Q8'
+--		),
+--		revent8: StatefulPIM!Flag (
+--			name <- 'E9'
+--		),
+--		
+--		rt9: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s2.sourcePort,
+--			dstPort <- s2.destinationPort,
+--			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s2.protocol,
+--			states <- rstate9,
+--			setFlags <- revent9,
+--			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+--		),
+--		rstate9: StatefulPIM!State (
+--			name <- 'Q9'
+--		),
+--		revent9: StatefulPIM!Flag (
+--			name <- 'E9'
+--		),
+--		
+--		rt10: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s2.sourcePort,
+--			dstPort <- s2.destinationPort,
+--			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s2.protocol,
+--			states <- rstate10,
+--			setFlags <- revent10,
+--			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+--		),
+--		rstate10: StatefulPIM!State (
+--			name <- 'Q10'
+--		),
+--		revent10: StatefulPIM!Flag (
+--			name <- 'E9'
+--		),
+--		
+--		rt11: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s2.sourcePort,
+--			dstPort <- s2.destinationPort,
+--			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s2.protocol,
+--			states <- rstate11,
+--			setFlags <- revent11,
+--			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+--		),
+--		rstate11: StatefulPIM!State (
+--			name <- 'Q11'
+--		),
+--		revent11: StatefulPIM!Flag (
+--			name <- 'E9'
+--		),
+--		
+--		rt12: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s2.sourcePort,
+--			dstPort <- s2.destinationPort,
+--			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s2.protocol,
+--			states <- rstate12,
+--			setFlags <- revent12,
+--			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+--		),
+--		rstate12: StatefulPIM!State (
+--			name <- 'Q12'
+--		),
+--		revent12: StatefulPIM!Flag (
+--			name <- 'E9'
+--		)
+--}
+
+rule filterDropEstablishedAssured2Connections{
+	from
+		s1: Iptables!FilterSpec,
+		s2: Iptables!FilterSpec (thisModule.FirstPathRules->includes(s1)
+			and s1.target = 'DROP'
+			and not s1.isOfStateAndStatus('ESTABLISHED', 'ASSURED', 'ACK') 
+			and not s2.isOfStateAndStatus('ESTABLISHED', 'ASSURED', 'ACK')
+			and s1.isStateAndStatus('ESTABLISHED', 'ASSURED') 
+			and s2.isStateAndStatus('ESTABLISHED', 'ASSURED')
+			and s1.equal(s2)
+			and s2.ip = s1.ipDst 
+			and s2.ipDst = s1.ip
+			and s1.normalTransition()
+			and s2.normalTransition())
+	to
+		t: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s1.sourcePort.debug('R2 Drop matched'),
+			dstPort <- s1.destinationPort,
+			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s1.protocol,
+			states <- state,
+			setFlags <- event,
+			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+		),
+		state: StatefulPIM!State (
+			name <- 'Q5'
+		),
+		event: StatefulPIM!Flag (
+			name <- thisModule.STRANSITIONS.get(thisModule.aggregateFlags(s1.flags))
+		),
+		
+		t2: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+			srcPort <- s2.sourcePort,
+			dstPort <- s2.destinationPort,
+			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+			protocol <- s2.protocol,
+			states <- state2,
+			setFlags <- event2,
+			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+		),
+		state2: StatefulPIM!State (
+			name <- 'Q5'
+		),
+		event2: StatefulPIM!Flag (
+			name <- thisModule.RTRANSITIONS.get(thisModule.aggregateFlags(s2.flags))
+		)
+}
+
+--rule filterDropEstablishedAssuredInv2Connections{
+--	from
+--		s1: Iptables!FilterSpec,
+--		s2: Iptables!FilterSpec (thisModule.FirstPathRules->includes(s1)
+--			and not s1.isOfStateAndStatus('ESTABLISHED', 'ASSURED', 'ACK') 
+--			and not s2.isOfStateAndStatus('ESTABLISHED', 'ASSURED', 'ACK')
+--			and s1.isStateAndStatus('ESTABLISHED', 'ASSURED') 
+--			and s2.isStateAndStatus('ESTABLISHED', 'ASSURED')
+--			and s1.equal(s2)
+--			and s2.ip = s1.ipDst 
+--			and s2.ipDst = s1.ip
+--			and not s1.normalTransition()
+--			and not s2.normalTransition())
+--	to
+--		t: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s1.sourcePort.debug('R2 matched'),
+--			dstPort <- s1.destinationPort,
+--			kind <- if s1.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s1.protocol,
+--			states <- state,
+--			setFlags <- event,
+--			desHost <- thisModule.createHost(thisModule.findHost(s1.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s1.ip))
+--		),
+--		state: StatefulPIM!State (
+--			name <- 'Q5'
+--		),
+--		event: StatefulPIM!Flag (
+--			name <- 'E10'
+--		),
+--		
+--		t2: StatefulPIM!Connection -> (StatefulPIM!Network.allInstancesFrom('OUT')->first().connections) (
+--			srcPort <- s2.sourcePort,
+--			dstPort <- s2.destinationPort,
+--			kind <- if s2.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s2.protocol,
+--			states <- state2,
+--			setFlags <- event2,
+--			desHost <- thisModule.createHost(thisModule.findHost(s2.ipDst)),
+--			srcHost <- thisModule.createHost(thisModule.findHost(s2.ip))
+--		),
+--		state2: StatefulPIM!State (
+--			name <- 'Q5'
+--		),
+--		event2: StatefulPIM!Flag (
+--			name <- 'E9'
+--		)
+--}
+
+------------------------------------------------------------------------------------------------------------
+-- END of open case rules
+------------------------------------------------------------------------------------------------------------
+
+
+unique lazy rule createHost{
+	from
+		s: HOSTS!Host
+	to 
+		t: StatefulPIM!Host(
+			ipAddress <- s.ipAddress		
+	)
+}
+
+--rule filterSpecNew2ConnectionQ0{
+--	from
+--		s: Iptables!FilterSpec (s.isOfState('NEW', 'SYN'))
+--	to
+--		t: StatefulPIM!Connection (
+--			srcPort <- s.sourcePort,
+--			dstPort <- s.destinationPort,
+--			kind <- if s.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s.protocol,
+--			states <- state,
+--			setFlags <- event
+--		),
+--		state: StatefulPIM!State (
+--			name <- 'Q0'
+--		),
+--		event: StatefulPIM!Flag (
+--			name <- if s.dir = 'ORIGINAL' then 'E2' else 'E1'	 endif
+--		)
+--}
+--
+--rule filterSpecExpected2Connection{
+--	from
+--		s: Iptables!FilterSpec (s.isOfStateAndStatus('ESTABLISHED', 'SEEN_REPLY', 'SYN+ACK'))
+--	to
+--		t: StatefulPIM!Connection (
+--			srcPort <- s.sourcePort,
+--			dstPort <- s.destinationPort,
+--			kind <- if s.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s.protocol,
+--			states <- state,
+--			setFlags <- event
+--		),
+--		state: StatefulPIM!State (
+--			name <- if s.dir = 'ORIGINAL' then 'Q1' else 'Q2' endif
+--		),
+--		event: StatefulPIM!Flag (
+--			name <- if s.dir = 'ORIGINAL' then 'E4' else 'E3' endif
+--		)
+--}
+--
+--rule filterSpecSeen2Connection{
+--	from
+--		s: Iptables!FilterSpec (s.isOfStateAndStatus('ESTABLISHED', 'ASSURED', 'ACK'))
+--	to
+--		t: StatefulPIM!Connection (
+--			srcPort <- s.sourcePort,
+--			dstPort <- s.destinationPort,
+--			kind <- if s.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s.protocol,
+--			states <- state,
+--			setFlags <- event
+--		),
+--		state: StatefulPIM!State (
+--			name <- if s.dir = 'ORIGINAL' then 'Q4' else 'Q3' endif
+--		),
+--		event: StatefulPIM!Flag (
+--			name <- if s.dir = 'ORIGINAL' then 'E6' else 'E5' endif
+--		),
+--		--We use here reverse binding to include this in the connections list
+--		t2: StatefulPIM!Connection -> (StatefulPIM!Network.allInstances()->first().connections)(
+--			srcPort <- s.sourcePort,
+--			dstPort <- s.destinationPort,
+--			kind <- if s.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s.protocol,
+--			states <- state2,
+--			setFlags <- event2
+--		),
+--		state2: StatefulPIM!State (
+--			name <- 'Q5'
+--		),
+--		event2: StatefulPIM!Flag (
+--			name <- if s.dir = 'ORIGINAL' then 'E6' else 'E5' endif
+--		),
+--		
+--		t3: StatefulPIM!Connection -> (StatefulPIM!Network.allInstances()->first().connections) (
+--			srcPort <- s.sourcePort,
+--			dstPort <- s.destinationPort,
+--			kind <- if s.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s.protocol,
+--			states <- state3,
+--			setFlags <- event3
+--		),
+--		state3: StatefulPIM!State (
+--			name <- if s.dir = 'ORIGINAL' then 'Q7' else 'Q8' endif
+--		),
+--		event3: StatefulPIM!Flag (
+--			name <- if s.dir = 'ORIGINAL' then 'E6' else 'E5' endif
+--		),
+--		
+--		t4: StatefulPIM!Connection -> (StatefulPIM!Network.allInstances()->first().connections) (
+--			srcPort <- s.sourcePort,
+--			dstPort <- s.destinationPort,
+--			kind <- if s.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s.protocol,
+--			states <- state4,
+--			setFlags <- event4
+--		),
+--		state4: StatefulPIM!State (
+--			name <- if s.dir = 'ORIGINAL' then 'Q12' else 'Q9' endif
+--		),
+--		event4: StatefulPIM!Flag (
+--			name <- if s.dir = 'ORIGINAL' then 'E6' else 'E5' endif
+--		)
+--}
+--
+--rule filterSpecAssuredFIN2ConnectionOriginal{
+--	from
+--		s: Iptables!FilterSpec (s.isOfStateAndStatus('ESTABLISHED', 'SEEN_REPLY', 'ACK+FIN') and s.isOriginal())
+--	to
+--		t: StatefulPIM!Connection (
+--			srcPort <- s.sourcePort,
+--			dstPort <- s.destinationPort,
+--			kind <- if s.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s.protocol,
+--			states <- state,
+--			setFlags <- event
+--		),
+--		state: StatefulPIM!State (
+--			name <- 'Q6'
+--		),
+--		event: StatefulPIM!Flag (
+--			name <- 'E8'
+--		),
+--		
+--		t2: StatefulPIM!Connection  -> (StatefulPIM!Network.allInstances()->first().connections) (
+--			srcPort <- s.sourcePort,
+--			dstPort <- s.destinationPort,
+--			kind <- if s.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s.protocol,
+--			states <- state2,
+--			setFlags <- event2
+--		),
+--		state2: StatefulPIM!State (
+--			name <- 'Q10'
+--		),
+--		event2: StatefulPIM!Flag (
+--			name <- 'E8'
+--		),
+--		
+--		t3: StatefulPIM!Connection  -> (StatefulPIM!Network.allInstances()->first().connections) (
+--			srcPort <- s.sourcePort,
+--			dstPort <- s.destinationPort,
+--			kind <- if s.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s.protocol,
+--			states <- state3,
+--			setFlags <- event3
+--		),
+--		state3: StatefulPIM!State (
+--			name <- 'Q7'
+--		),
+--		event3: StatefulPIM!Flag (
+--			name <- 'E8'
+--		)
+--}
+--
+--rule filterSpecAssuredFIN2Connection{
+--	from
+--		s: Iptables!FilterSpec (s.isOfStateAndStatus('ESTABLISHED', 'SEEN_REPLY', 'ACK+FIN') and not s.isOriginal())
+--	to
+--		t: StatefulPIM!Connection (
+--			srcPort <- s.sourcePort,
+--			dstPort <- s.destinationPort,
+--			kind <- if s.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s.protocol,
+--			states <- state,
+--			setFlags <- event
+--		),
+--		state: StatefulPIM!State (
+--			name <- 'Q6'
+--		),
+--		event: StatefulPIM!Flag (
+--			name <- 'E7'
+--		),
+--		
+--		t2: StatefulPIM!Connection  -> (StatefulPIM!Network.allInstances()->first().connections) (
+--			srcPort <- s.sourcePort,
+--			dstPort <- s.destinationPort,
+--			kind <- if s.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s.protocol,
+--			states <- state2,
+--			setFlags <- event2
+--		),
+--		state2: StatefulPIM!State (
+--			name <- 'Q11'
+--		),
+--		event2: StatefulPIM!Flag (
+--			name <- 'E7'
+--		)
+--}
+--
+--rule filterSpecAssuredACK2Connection{
+--	from
+--		s: Iptables!FilterSpec (s.isOfStateAndStatus('ESTABLISHED', 'ASSURED', 'ACK'))
+--	to
+--		t: StatefulPIM!Connection (
+--			srcPort <- s.sourcePort,
+--			dstPort <- s.destinationPort,
+--			kind <- if s.target = 'ACCEPT' then #ACCEPT else #DENY endif,
+--			protocol <- s.protocol,
+--			states <- state,
+--			setFlags <- event
+--		),
+--		state: StatefulPIM!State (
+--			name <- 'Q5'
+--		),
+--		event: StatefulPIM!Flag (
+--			name <- if s.dir = 'ORIGINAL' then 'E8' else 'E7' endif
+--		)
+--}
+
+
